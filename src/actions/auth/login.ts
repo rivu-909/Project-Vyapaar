@@ -4,12 +4,16 @@ import loginServiceCall from "../../services/auth/loginServiceCall";
 
 const login = createAsyncThunk(
     "user/login",
-    async (userCred: ILoginRequest) => {
+    async (userCred: ILoginRequest, { rejectWithValue }) => {
         try {
-            const response = await loginServiceCall(userCred);
-            return response;
+            const data = await loginServiceCall(userCred);
+            if (data.token) {
+                return data.token;
+            } else {
+                throw new Error("Login failed");
+            }
         } catch (err) {
-            console.log(err);
+            return rejectWithValue((err as Error).message);
         }
     }
 );

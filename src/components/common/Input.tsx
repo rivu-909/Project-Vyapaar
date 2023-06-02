@@ -15,7 +15,7 @@ interface InputProps {
 
 export default function Input(props: InputProps) {
     return (
-        <>
+        <View>
             <Text style={[styles.label, !!props.invalid && styles.errorLabel]}>
                 {props.label}
             </Text>
@@ -24,7 +24,7 @@ export default function Input(props: InputProps) {
                 placeholderTextColor="grey"
                 {...props.textInputConfig}
             />
-        </>
+        </View>
     );
 }
 
