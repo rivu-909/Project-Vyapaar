@@ -3,6 +3,7 @@ interface User {
     isLoggingIn: boolean;
     isLoggedIn: boolean;
     isSigningUp: boolean;
+    fetchingToken: boolean;
 }
 
 export default User;

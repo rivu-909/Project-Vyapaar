@@ -1,16 +1,23 @@
+import { NavigationProp } from "@react-navigation/native";
 import React from "react";
 import { GestureResponderEvent, Text, View } from "react-native";
 import Button from "../../components/common/Button";
 
-export default function Welcome() {
-    const clickHandler = (evt: GestureResponderEvent) => {
+interface WelcomeNavigationProps {
+    navigation: NavigationProp<any, any>;
+}
+
+export default function Welcome(props: WelcomeNavigationProps) {
+    const goToLoginPage = (evt: GestureResponderEvent) => {
         evt.stopPropagation();
-        console.log("Button clicked!");
+        props.navigation.navigate("Login");
     };
     return (
-        <View>
+        <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
             <Text>Welcome to Vyapaar</Text>
-            <Button onPress={clickHandler} label="click me!" />
+            <Button onPress={goToLoginPage} label="Get started" />
         </View>
     );
 }

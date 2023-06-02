@@ -4,12 +4,16 @@ import signUpServiceCall from "../../services/auth/signUpServiceCall";
 
 const signUp = createAsyncThunk(
     "user/signUp",
-    async (userCred: ISignUpRequest) => {
+    async (userCred: ISignUpRequest, { rejectWithValue }) => {
         try {
-            const response = await signUpServiceCall(userCred);
-            return response;
+            const data = await signUpServiceCall(userCred);
+            if (data.token) {
+                return data.token;
+            } else {
+                throw new Error("Sign up failed");
+            }
         } catch (err) {
-            console.log(err);
+            return rejectWithValue((err as Error).message);
         }
     }
 );
