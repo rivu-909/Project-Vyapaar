@@ -1,12 +1,21 @@
 import axios from "axios";
-import IAuthResponse from "../../schema/response/IAuthResponse";
 import ISignUpRequest from "../../schema/servicesSchema/ISignUpRequest";
-import { serverUrl } from "../constants";
+import User from "../../schema/user/User";
+import { serverUrl } from "../../constants";
 
-export default async function signUpServiceCall(userCred: ISignUpRequest) {
+export default async function signUpServiceCall(
+    userCred: ISignUpRequest
+): Promise<User> {
     try {
         const response = await axios.post(serverUrl + "/auth/signUp", userCred);
-        return response.data as IAuthResponse;
+        const data = response.data;
+        const userData: User = {
+            userId: data.user.userId,
+            name: data.user.name,
+            phoneNumber: data.user.phoneNumber,
+            token: data.token,
+        };
+        return userData;
     } catch (err) {
         throw err;
     }

@@ -1,28 +1,28 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import { RootState } from "../../store/store";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
 import LoginForm from "../../components/login/LoginForm";
+import { LoginScreenNavigationProp } from "../../schema/ReactNavigation";
+import LoadingState from "../../schema/LoadingState";
+
+interface LoginProps {
+    navigation: LoginScreenNavigationProp;
+}
 
 interface LoginStateProps {
-    isLoggedIn: boolean;
-    isLoggingIn: boolean;
+    loginState: LoadingState;
 }
 
-interface LoginNavigationProps {
-    navigation: any;
-}
-
-function Login(props: LoginStateProps & LoginNavigationProps) {
+function Login(props: LoginProps & LoginStateProps) {
     const goToSignUpPage = () => {
         props.navigation.navigate("SignUp");
     };
+
     return (
-        <View
-            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-            {props.isLoggingIn ? (
+        <View style={styles.root}>
+            {props.loginState === LoadingState.pending ? (
                 <LoadingOverlay message="Logging you in..." />
             ) : (
                 <>
@@ -39,9 +39,16 @@ function Login(props: LoginStateProps & LoginNavigationProps) {
 function mapState(state: RootState): LoginStateProps {
     const user = state.user;
     return {
-        isLoggedIn: user.isLoggedIn,
-        isLoggingIn: user.isLoggingIn,
+        loginState: user.loginState,
     };
 }
+
+const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+});
 
 export default connect(mapState)(Login);

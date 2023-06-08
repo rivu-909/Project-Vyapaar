@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import getProducts from "../../../actions/product/getProducts";
+import LoadingState from "../../../schema/LoadingState";
 import Product from "../../../schema/products/Product";
-import Products from "../../../schema/products/Products";
+import ProductState from "../../../schema/products/ProductState";
 
-const initialState: Products = {
+const initialState: ProductState = {
     products: [],
-    isLoading: false,
-    isFetched: false,
+    productsLoadingState: LoadingState.idle,
 };
 
 const productsSlice = createSlice({
@@ -15,21 +15,24 @@ const productsSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getProducts.pending.type, (state: Products) => {
-                state.isLoading = true;
+
+            // GET ALL PRODUCTS
+
+            .addCase(getProducts.pending.type, (state: ProductState) => {
+                state.productsLoadingState = LoadingState.pending;
             })
             .addCase(
                 getProducts.fulfilled.type,
-                (state: Products, action: PayloadAction<Array<Product>>) => {
-                    console.log("success");
-                    state.isLoading = false;
-                    state.isFetched = true;
+                (
+                    state: ProductState,
+                    action: PayloadAction<Array<Product>>
+                ) => {
+                    state.productsLoadingState = LoadingState.success;
                     state.products = action.payload;
                 }
             )
-            .addCase(getProducts.rejected.type, (state: Products) => {
-                console.log("rejected");
-                state.isLoading = false;
+            .addCase(getProducts.rejected.type, (state: ProductState) => {
+                state.productsLoadingState = LoadingState.failed;
             });
     },
 });

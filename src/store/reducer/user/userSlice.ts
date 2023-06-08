@@ -1,88 +1,90 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import User from "../../../schema/User";
+import UserState from "../../../schema/user/UserState";
 import login from "../../../actions/auth/login";
 import signUp from "../../../actions/auth/signUp";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import fetchToken from "../../../actions/auth/fetchToken";
+import LoadingState from "../../../schema/LoadingState";
+import User from "../../../schema/user/User";
 
-const initialState: User = {
+const initialState: UserState = {
     token: null,
-    isLoggedIn: false,
-    isLoggingIn: false,
-    isSigningUp: false,
-    fetchingToken: false,
+    name: null,
+    userId: null,
+    phoneNumber: null,
+    loginState: LoadingState.idle,
+    signUpState: LoadingState.idle,
+    bootState: LoadingState.idle,
 };
 
 const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        logout: (state: User) => {
-            state.isLoggedIn = false;
+        // BOOT
+
+        setBootState: (
+            state: UserState,
+            action: PayloadAction<LoadingState>
+        ) => {
+            state.bootState = action.payload;
+        },
+
+        // USER
+
+        setUser: (state: UserState, action: PayloadAction<User>) => {
+            state.name = action.payload.name;
+            state.phoneNumber = action.payload.phoneNumber;
+            state.userId = action.payload.userId;
+        },
+
+        // TOKEN
+
+        setToken: (state: UserState, action: PayloadAction<string>) => {
+            state.token = action.payload;
+        },
+
+        // LOGOUT
+
+        logout: (state: UserState) => {
+            state.loginState = LoadingState.idle;
             state.token = null;
-            AsyncStorage.removeItem("userToken");
         },
     },
+
     extraReducers: (builder) => {
         builder
-            .addCase(login.pending.type, (state: User) => {
-                state.isLoggingIn = true;
-            })
-            .addCase(
-                login.fulfilled.type,
-                (state: User, action: PayloadAction<string>) => {
-                    console.log("success");
-                    state.isLoggingIn = false;
-                    state.isLoggedIn = true;
-                    state.token = action.payload;
 
-                    AsyncStorage.setItem("userToken", action.payload);
-                }
-            )
-            .addCase(login.rejected.type, (state: User) => {
-                console.log("rejected");
-                state.isLoggingIn = false;
-                state.isLoggedIn = false;
-            })
-            .addCase(signUp.pending.type, (state: User) => {
-                state.isSigningUp = true;
-            })
-            .addCase(
-                signUp.fulfilled.type,
-                (state: User, action: PayloadAction<string>) => {
-                    console.log("success");
-                    state.isSigningUp = false;
-                    state.isLoggedIn = true;
-                    state.token = action.payload;
+            // LOGIN
 
-                    AsyncStorage.setItem("userToken", action.payload);
-                }
-            )
-            .addCase(signUp.rejected.type, (state: User) => {
-                console.log("rejected");
-                state.isSigningUp = false;
+            .addCase(login.pending.type, (state: UserState) => {
+                state.loginState = LoadingState.pending;
             })
-            .addCase(fetchToken.pending.type, (state: User) => {
-                state.fetchingToken = true;
-            })
-            .addCase(
-                fetchToken.fulfilled.type,
-                (state: User, action: PayloadAction<string>) => {
-                    console.log("success");
-                    state.fetchingToken = false;
-                    state.isLoggingIn = false;
-                    state.isLoggedIn = true;
-                    state.token = action.payload;
-                }
-            )
-            .addCase(fetchToken.rejected.type, (state: User) => {
-                console.log("rejected");
-                state.fetchingToken = false;
+            .addCase(login.fulfilled.type, addUser)
+            .addCase(login.rejected.type, (state: UserState) => {
+                state.loginState = LoadingState.failed;
             })
 
-            .addDefaultCase((state: User) => {});
+            // SIGNUP
+
+            .addCase(signUp.pending.type, (state: UserState) => {
+                state.signUpState = LoadingState.pending;
+            })
+            .addCase(signUp.fulfilled.type, addUser)
+            .addCase(signUp.rejected.type, (state: UserState) => {
+                state.signUpState = LoadingState.failed;
+            })
+
+            .addDefaultCase((state: UserState) => {});
     },
 });
 
-export const { logout } = userSlice.actions;
+function addUser(state: UserState, action: PayloadAction<User>) {
+    state.loginState = LoadingState.success;
+    state.signUpState = LoadingState.success;
+    state.token = action.payload.token;
+    state.name = action.payload.name;
+    state.phoneNumber = action.payload.phoneNumber;
+    state.userId = action.payload.userId;
+}
+
+export const { logout, setToken, setUser, setBootState } = userSlice.actions;
 export default userSlice.reducer;

@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { FlatList, StyleSheet, View } from "react-native";
 import Product from "../../schema/products/Product";
 import ProductCard from "./productCard";
 
@@ -6,12 +7,18 @@ interface ProductListProps {
     products: Array<Product>;
 }
 
+function renderProductCard({ item }: { item: Product }) {
+    return <ProductCard product={item} />;
+}
+
 export default function ProductList(props: ProductListProps) {
     return (
         <View style={styles.productList}>
-            {props.products.map((product) => (
-                <ProductCard product={product} key={product._id} />
-            ))}
+            <FlatList
+                data={props.products}
+                keyExtractor={(p) => p.productId}
+                renderItem={renderProductCard}
+            />
         </View>
     );
 }

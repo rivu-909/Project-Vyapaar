@@ -10,7 +10,8 @@ interface SignUpFormDispatchProps {
     signUpHandler: (
         name: string,
         phoneNumber: string,
-        password: string
+        password: string,
+        gstin: string
     ) => void;
 }
 
@@ -20,11 +21,13 @@ function SignUpForm(props: SignUpFormDispatchProps) {
         phoneNumber: string;
         password: string;
         confirmPassword: string;
+        gstin: string;
     }>({
         name: "",
         phoneNumber: "",
         password: "",
         confirmPassword: "",
+        gstin: "",
     });
 
     const inputChangeHandler = (
@@ -44,7 +47,8 @@ function SignUpForm(props: SignUpFormDispatchProps) {
             const response = props.signUpHandler(
                 inputs.name,
                 inputs.phoneNumber,
-                inputs.password
+                inputs.password,
+                inputs.gstin
             );
             console.log(response);
         } catch (err) {
@@ -92,6 +96,14 @@ function SignUpForm(props: SignUpFormDispatchProps) {
                     secureTextEntry: true,
                 }}
             />
+            <Input
+                label="GSTIN"
+                textInputConfig={{
+                    onChangeText: inputChangeHandler.bind(null, "gstin"),
+                    value: inputs.gstin,
+                    placeholder: "Your GSTIN",
+                }}
+            />
             <Button onPress={onSignUp} label="SignUp" />
         </>
     );
@@ -102,9 +114,10 @@ function mapDispatch(dispatch: Dispatch): SignUpFormDispatchProps {
         signUpHandler: (
             name: string,
             phoneNumber: string,
-            password: string
+            password: string,
+            gstin: string
         ) => {
-            dispatch(signUp({ name, phoneNumber, password }));
+            dispatch(signUp({ name, phoneNumber, password, gstin }));
         },
     };
 }
