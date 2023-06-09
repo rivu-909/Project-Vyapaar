@@ -8,7 +8,7 @@ export type RootStackParamList = {
     SignUp: undefined;
     UserHome: undefined;
     Details: {
-        product: Product;
+        productId: string;
     };
 };
 

@@ -11,7 +11,7 @@ interface ProductCardProps {
 export default function ProductCard(props: ProductCardProps) {
     const navigation = useNavigation<DetailsScreenNavigationProp>();
     const goToDetailsHandler = () => {
-        navigation.navigate("Details", { product: props.product });
+        navigation.navigate("Details", { productId: props.product.productId });
     };
     return (
         <Pressable
@@ -19,7 +19,7 @@ export default function ProductCard(props: ProductCardProps) {
             android_ripple={{ color: "grey" }}
         >
             <View style={styles.card}>
-                <Heading label={props.product.description} />
+                <Heading label={props.product.name} />
                 <Text> {props.product.price}</Text>
             </View>
         </Pressable>
