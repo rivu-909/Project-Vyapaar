@@ -9,21 +9,27 @@ interface TradeDetails {
     trade?: ITrade;
 }
 
-const initialTradeDailogProp = {
+const initialTradeDailogState = {
     visible: false,
     productId: "",
     tradeType: TradeType.Ask,
     trade: null,
 };
 
+const initialProductDailogState = {
+    visible: false,
+};
+
 const initialState: AppConfigState = {
-    tradeDailog: initialTradeDailogProp,
+    tradeDailog: initialTradeDailogState,
+    productDailog: initialProductDailogState,
 };
 
 const appConfigSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
+        // TRADE DAILOG
         onShowTradeDailog: (
             state: AppConfigState,
             action: PayloadAction<TradeDetails>
@@ -36,10 +42,23 @@ const appConfigSlice = createSlice({
             state.tradeDailog.visible = true;
         },
         onTradeDailogClose: (state: AppConfigState) => {
-            state.tradeDailog = initialTradeDailogProp;
+            state.tradeDailog = initialTradeDailogState;
+        },
+
+        // PRODUCT DAILOG
+        onShowProductDailog: (state: AppConfigState) => {
+            state.productDailog.visible = true;
+        },
+        onCloseProductDailog: (state: AppConfigState) => {
+            state.productDailog.visible = false;
         },
     },
 });
 
-export const { onTradeDailogClose, onShowTradeDailog } = appConfigSlice.actions;
+export const {
+    onTradeDailogClose,
+    onShowTradeDailog,
+    onShowProductDailog,
+    onCloseProductDailog,
+} = appConfigSlice.actions;
 export default appConfigSlice.reducer;

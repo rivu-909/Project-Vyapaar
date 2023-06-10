@@ -7,9 +7,10 @@ import React from "react";
 import getProducts from "../../actions/product/getProducts";
 import Button from "../../components/common/Button";
 import ProductList from "../../components/product/ProductList";
-import CreateProductDailog from "../../components/product/CreateProductDailog";
+import ProductDailog from "../../components/product/ProductDailog";
 import LoadingState from "../../schema/LoadingState";
 import logoutHandler from "../../actions/auth/logoutHandler";
+import { onShowProductDailog } from "../../store/reducer/appConfig/appConfigSlice";
 
 interface UserHomeStateProps {
     productLoadingState: LoadingState;
@@ -20,6 +21,7 @@ interface UserHomeStateProps {
 interface UserHomeDispatchProps {
     fetchProducts: (token: string) => void;
     logout: () => void;
+    createProductHandler: () => void;
 }
 
 function UserHome(props: UserHomeStateProps & UserHomeDispatchProps) {
@@ -27,32 +29,27 @@ function UserHome(props: UserHomeStateProps & UserHomeDispatchProps) {
         props.fetchProducts(props.token);
     }, []);
 
-    const [createProductDailogVisibility, setCreateProductDailogVisibility] =
-        React.useState<boolean>(false);
-
     const onCreateProductClick = React.useCallback(() => {
-        setCreateProductDailogVisibility(true);
-    }, []);
-
-    const onCloseDailog = React.useCallback(() => {
-        setCreateProductDailogVisibility(false);
+        props.createProductHandler();
     }, []);
 
     return (
-        <View style={{ flex: 1, justifyContent: "center" }}>
-            {props.productLoadingState === LoadingState.pending ? (
-                <LoadingOverlay message="Loading..." />
-            ) : (
-                <ProductList products={props.products} />
-            )}
+        <>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                {props.productLoadingState === LoadingState.pending ? (
+                    <LoadingOverlay message="Loading..." />
+                ) : (
+                    <ProductList products={props.products} />
+                )}
 
-            <Button label="Create new product" onPress={onCreateProductClick} />
-            <Button label="Log out" onPress={props.logout} />
-            <CreateProductDailog
-                onClose={onCloseDailog}
-                visible={createProductDailogVisibility}
-            />
-        </View>
+                <Button
+                    label="Create new product"
+                    onPress={onCreateProductClick}
+                />
+                <Button label="Log out" onPress={props.logout} />
+            </View>
+            <ProductDailog />
+        </>
     );
 }
 
@@ -72,6 +69,9 @@ function mapDispatch(dispatch: Dispatch): UserHomeDispatchProps {
         },
         logout: () => {
             logoutHandler(dispatch);
+        },
+        createProductHandler: () => {
+            dispatch(onShowProductDailog());
         },
     };
 }

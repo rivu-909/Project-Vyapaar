@@ -56,7 +56,12 @@ const productsSlice = createSlice({
                     const productIndex = state.products.findIndex(
                         (p) => p.productId === action.payload!.productId
                     );
-                    state.products.splice(productIndex, 1, action.payload);
+
+                    if (productIndex === -1) {
+                        state.products.push(action.payload);
+                    } else {
+                        state.products.splice(productIndex, 1, action.payload);
+                    }
                 }
             )
             .addCase(getProductDetails.rejected.type, (state: ProductState) => {

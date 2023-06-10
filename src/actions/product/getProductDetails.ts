@@ -1,8 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
+import ICreateProductRequest from "../../schema/servicesSchema/ICreateProductRequest";
 import ICreateTradeRequest from "../../schema/servicesSchema/ICreateTradeRequest";
 import IFetchProductDetailsRequest from "../../schema/servicesSchema/IFetchProductDetailsRequest";
 import IUpdateTradeRequest from "../../schema/servicesSchema/IUpdateTradeRequest";
+import createProductServiceCall from "../../services/products/createProductServiceCall";
 import fetchProductDetailsServiceCall from "../../services/products/fetchProductDetailsServiceCall";
 import createTradeServiceCall from "../../services/trade/createTradeServiceCall";
 import updateTradeServiceCall from "../../services/trade/updateTradeServiceCall";
@@ -11,6 +13,7 @@ type ParamsType = (
     | IFetchProductDetailsRequest
     | ICreateTradeRequest
     | IUpdateTradeRequest
+    | ICreateProductRequest
 ) & {
     actionType: GetProductDetailsActionType;
 };
@@ -35,6 +38,12 @@ const getProductDetails = createAsyncThunk(
                 case GetProductDetailsActionType.FetchProduct: {
                     product = await fetchProductDetailsServiceCall(
                         params as IFetchProductDetailsRequest
+                    );
+                    break;
+                }
+                case GetProductDetailsActionType.CreateProduct: {
+                    product = await createProductServiceCall(
+                        params as ICreateProductRequest
                     );
                     break;
                 }
