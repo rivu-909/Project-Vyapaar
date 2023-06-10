@@ -16,8 +16,7 @@ export default async function fetchProductDetailsServiceCall(
             }
         );
 
-        const product = response.data.product;
-        return product;
+        return response.data.product;
     } catch (err) {
         throw err;
     }

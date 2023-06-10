@@ -5,10 +5,12 @@ import getProductDetails from "../../actions/product/getProductDetails";
 import Button from "../../components/common/Button";
 import Heading from "../../components/common/Heading";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
-import CreateTradeDailog from "../../components/product/CreateTradeDailog";
+import TradeDailog from "../../components/product/TradeDailog";
 import TradeList from "../../components/product/Tradelist";
+import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
 import LoadingState from "../../schema/LoadingState";
 import Product from "../../schema/products/Product";
+import TradeType from "../../schema/products/TradeType";
 import { DetailsScreenRouteProp } from "../../schema/ReactNavigation";
 import { Dispatch, RootState } from "../../store/store";
 import getProductFromId from "../../utils/getProductFromId";
@@ -41,15 +43,15 @@ function ProductDetails(
         }
     }, []);
 
-    const [createTradeDailogVisibility, setCreateTradeDailogVisibility] =
+    const [createTradeDailogVisibility, setTradeDailogVisibility] =
         React.useState<boolean>(false);
 
     const bidClickHandler = React.useCallback(() => {
-        setCreateTradeDailogVisibility(true);
+        setTradeDailogVisibility(true);
     }, []);
 
     const onCloseTradeDailog = React.useCallback(() => {
-        setCreateTradeDailogVisibility(false);
+        setTradeDailogVisibility(false);
     }, []);
 
     return !isTradesLoaded ? (
@@ -63,9 +65,11 @@ function ProductDetails(
             </View>
             <TradeList trades={product.trades} />
             <Button label="BID" onPress={bidClickHandler} />
-            <CreateTradeDailog
+            <TradeDailog
                 onClose={onCloseTradeDailog}
                 visible={createTradeDailogVisibility}
+                tradeType={TradeType.bid}
+                productId={productId}
             />
         </View>
     );
@@ -92,7 +96,13 @@ function mapState(state: RootState): ProductDetailsStateProps {
 function mapDispatch(dispatch: Dispatch): ProductDetailsDispatchProps {
     return {
         fetchProduct: (token: string, productId: string) => {
-            dispatch(getProductDetails({ token, productId }));
+            dispatch(
+                getProductDetails({
+                    token,
+                    productId,
+                    actionType: GetProductDetailsActionType.FetchProduct,
+                })
+            );
         },
     };
 }

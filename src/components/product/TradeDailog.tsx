@@ -1,16 +1,46 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { connect } from "react-redux";
+import getProductDetails from "../../actions/product/getProductDetails";
+import { userDataKey } from "../../constants";
+import Address from "../../schema/Address";
+import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
+import TradeType from "../../schema/products/TradeType";
+import { Dispatch, RootState } from "../../store/store";
 import Button from "../common/Button";
 import DailogBox from "../common/DailogBox";
 import Heading from "../common/Heading";
 import Input from "../common/Input";
 
-interface CreateTradeDailogProps {
+interface TradeDailogProps {
     visible: boolean;
     onClose: () => void;
+    tradeType: TradeType;
+    productId: string;
+    tradeId?: string;
 }
 
-export default function CreateTradeDailog(props: CreateTradeDailogProps) {
+interface TradeDailogStateProps {
+    token: string;
+    userId: string;
+}
+
+interface TradeDailogDispatchProps {
+    editProductTrades: (
+        productId: string,
+        token: string,
+        userId: string,
+        price: string,
+        address: Address,
+        type: TradeType,
+        quantity: string,
+        _id?: string
+    ) => void;
+}
+
+function TradeDailog(
+    props: TradeDailogProps & TradeDailogStateProps & TradeDailogDispatchProps
+) {
     const [inputs, setInputs] = React.useState<{
         price: string;
         quantity: string;
@@ -43,6 +73,22 @@ export default function CreateTradeDailog(props: CreateTradeDailogProps) {
 
     const onSubmit = () => {
         console.log(inputs);
+        props.editProductTrades(
+            props.productId,
+            props.token,
+            props.userId,
+            inputs.price,
+            {
+                firstLine: inputs.firstLine,
+                secondLine: inputs.secondLine,
+                district: inputs.district,
+                state: inputs.state,
+                pincode: inputs.pincode,
+            },
+            props.tradeType,
+            inputs.quantity
+        );
+        props.onClose();
     };
 
     return (
@@ -53,7 +99,7 @@ export default function CreateTradeDailog(props: CreateTradeDailogProps) {
                     label="Price"
                     textInputConfig={{
                         onChangeText: inputChangeHandler.bind(null, "price"),
-                        value: inputs.price,
+                        value: inputs.price.toString(),
                         placeholder: "150000",
                     }}
                 />
@@ -68,16 +114,22 @@ export default function CreateTradeDailog(props: CreateTradeDailogProps) {
                 <Input
                     label="Address first line"
                     textInputConfig={{
-                        onChangeText: inputChangeHandler.bind(null, "quantity"),
-                        value: inputs.quantity,
+                        onChangeText: inputChangeHandler.bind(
+                            null,
+                            "firstLine"
+                        ),
+                        value: inputs.firstLine,
                         placeholder: "Shop 5, Sobha Market...",
                     }}
                 />
                 <Input
                     label="Address Second Line"
                     textInputConfig={{
-                        onChangeText: inputChangeHandler.bind(null, "quantity"),
-                        value: inputs.quantity,
+                        onChangeText: inputChangeHandler.bind(
+                            null,
+                            "secondLine"
+                        ),
+                        value: inputs.secondLine,
                         placeholder: "Near Eco Park...",
                     }}
                 />
@@ -101,7 +153,7 @@ export default function CreateTradeDailog(props: CreateTradeDailogProps) {
                     label="Pincode"
                     textInputConfig={{
                         onChangeText: inputChangeHandler.bind(null, "pincode"),
-                        value: inputs.pincode,
+                        value: inputs.pincode.toString(),
                         placeholder: "160014",
                     }}
                 />
@@ -127,3 +179,38 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
 });
+
+function mapState(state: RootState): TradeDailogStateProps {
+    const user = state.user;
+    return { token: user.token ?? "", userId: user.userId ?? "" };
+}
+
+function mapDispatch(dispatch: Dispatch): TradeDailogDispatchProps {
+    return {
+        editProductTrades: (
+            productId: string,
+            token: string,
+            userId: string,
+            price: string,
+            address: Address,
+            type: TradeType,
+            quantity: string,
+            _id?: string
+        ) => {
+            dispatch(
+                getProductDetails({
+                    actionType: GetProductDetailsActionType.CreateTrade,
+                    productId,
+                    token,
+                    price,
+                    address,
+                    type,
+                    quantity,
+                    userId,
+                })
+            );
+        },
+    };
+}
+
+export default connect(mapState, mapDispatch)(TradeDailog);

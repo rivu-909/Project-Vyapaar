@@ -6,9 +6,9 @@ const expirationDuration = 12; /* hour */
 export default async function cacheUserToken(token: string) {
     const tokenExpirationTime =
         Date.now() + expirationDuration * 60 * 60 * 1000;
-    const storeValue = JSON.stringify({
+    const value = JSON.stringify({
         token,
         tokenExpirationTime: tokenExpirationTime.toString(),
     });
-    await AsyncStorage.setItem(userTokenKey, storeValue);
+    await AsyncStorage.setItem(userTokenKey, value);
 }

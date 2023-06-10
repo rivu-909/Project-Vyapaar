@@ -10,7 +10,7 @@ export default function Trade(props: TradeProps) {
     const { price, address, type } = props.trade;
     return (
         <View style={styles.root}>
-            <Heading label={price.toString()} />
+            <Heading label={price} />
             <Text>{type}</Text>
             <Text>
                 {address.district} | {address.state}

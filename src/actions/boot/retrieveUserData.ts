@@ -9,6 +9,6 @@ export default async function retrieveUserData(dispatch: Dispatch) {
     if (!dataString) {
         return;
     }
-    const userData: User = JSON.parse(dataString);
+    const userData = JSON.parse(dataString);
     dispatch(setUser(userData));
 }

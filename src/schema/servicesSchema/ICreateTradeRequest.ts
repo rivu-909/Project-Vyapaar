@@ -1,8 +1,9 @@
 import Address from "../Address";
-import TradeType from "./TradeType";
+import TradeType from "../products/TradeType";
 
-export default interface ITrade {
-    _id: string;
+export default interface ICreateTradeRequest {
+    productId: string;
+    token: string;
     userId: string;
     price: string;
     address: Address;
