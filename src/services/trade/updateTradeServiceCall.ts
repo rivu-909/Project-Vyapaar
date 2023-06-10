@@ -1,19 +1,19 @@
 import axios from "axios";
 import { serverUrl } from "../../constants";
-import ICreateTradeRequest from "../../schema/servicesSchema/ICreateTradeRequest";
 import Product from "../../schema/products/Product";
+import IUpdateTradeService from "../../schema/servicesSchema/IUpdateTradeRequest";
 
-export default async function createTradeServiceCall(
-    params: ICreateTradeRequest
+export default async function updateTradeServiceCall(
+    params: IUpdateTradeService
 ): Promise<Product> {
     try {
-        const response = await axios.post(
-            `${serverUrl}/trade/new/${params.productId}`,
+        const response = await axios.put(
+            `${serverUrl}/trade/update/${params.productId}/${params.tradeId}`,
             {
                 price: params.price,
                 address: params.address,
-                type: params.type,
                 quantity: params.quantity,
+                type: params.type,
             },
             {
                 headers: {

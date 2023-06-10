@@ -1,46 +1,40 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import getProductDetails from "../../actions/product/getProductDetails";
-import { userDataKey } from "../../constants";
 import Address from "../../schema/Address";
 import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
+import ITrade from "../../schema/products/ITrade";
 import TradeType from "../../schema/products/TradeType";
+import { onTradeDailogClose } from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
 import Button from "../common/Button";
 import DailogBox from "../common/DailogBox";
 import Heading from "../common/Heading";
 import Input from "../common/Input";
 
-interface TradeDailogProps {
-    visible: boolean;
-    onClose: () => void;
-    tradeType: TradeType;
-    productId: string;
-    tradeId?: string;
-}
-
 interface TradeDailogStateProps {
     token: string;
-    userId: string;
+    visible: boolean;
+    tradeType: TradeType;
+    productId: string;
+    trade: ITrade | null;
 }
 
 interface TradeDailogDispatchProps {
+    onCloseDailog: () => void;
     editProductTrades: (
         productId: string,
         token: string,
-        userId: string,
         price: string,
         address: Address,
         type: TradeType,
         quantity: string,
-        _id?: string
+        tradeId?: string
     ) => void;
 }
 
-function TradeDailog(
-    props: TradeDailogProps & TradeDailogStateProps & TradeDailogDispatchProps
-) {
+function TradeDailog(props: TradeDailogStateProps & TradeDailogDispatchProps) {
     const [inputs, setInputs] = React.useState<{
         price: string;
         quantity: string;
@@ -49,15 +43,11 @@ function TradeDailog(
         district: string;
         state: string;
         pincode: string;
-    }>({
-        price: "",
-        quantity: "",
-        firstLine: "",
-        secondLine: "",
-        district: "",
-        state: "",
-        pincode: "",
-    });
+    }>(getInputs(null));
+
+    React.useEffect(() => {
+        setInputs(getInputs(props.trade));
+    }, [props.trade]);
 
     const inputChangeHandler = (
         inputIdentifier: string,
@@ -71,12 +61,15 @@ function TradeDailog(
         });
     };
 
+    const onClose = () => {
+        setInputs(getInputs(null));
+        props.onCloseDailog();
+    };
+
     const onSubmit = () => {
-        console.log(inputs);
         props.editProductTrades(
             props.productId,
             props.token,
-            props.userId,
             inputs.price,
             {
                 firstLine: inputs.firstLine,
@@ -86,13 +79,15 @@ function TradeDailog(
                 pincode: inputs.pincode,
             },
             props.tradeType,
-            inputs.quantity
+            inputs.quantity,
+            props.trade?._id
         );
-        props.onClose();
+
+        onClose();
     };
 
     return (
-        <DailogBox onClose={props.onClose} visible={props.visible}>
+        <DailogBox onClose={onClose} visible={props.visible}>
             <View style={styles.centeredView}>
                 <Heading label="Create your bid" />
                 <Input
@@ -100,7 +95,7 @@ function TradeDailog(
                     textInputConfig={{
                         onChangeText: inputChangeHandler.bind(null, "price"),
                         value: inputs.price.toString(),
-                        placeholder: "150000",
+                        placeholder: "",
                     }}
                 />
                 <Input
@@ -158,7 +153,7 @@ function TradeDailog(
                     }}
                 />
                 <Button onPress={onSubmit} label="Submit" />
-                <Button onPress={props.onClose} label="Cancel" />
+                <Button onPress={onClose} label="Cancel" />
             </View>
         </DailogBox>
     );
@@ -180,34 +175,62 @@ const styles = StyleSheet.create({
     },
 });
 
+function getInputs(trade: ITrade | null) {
+    const returnVal = {
+        price: trade?.price ?? "",
+        quantity: trade?.quantity ?? "",
+        firstLine: trade?.address.firstLine ?? "",
+        secondLine: trade?.address.secondLine ?? "",
+        district: trade?.address.district ?? "",
+        state: trade?.address.state ?? "",
+        pincode: trade?.address.pincode.toString() ?? "",
+    };
+    return returnVal;
+}
+
 function mapState(state: RootState): TradeDailogStateProps {
     const user = state.user;
-    return { token: user.token ?? "", userId: user.userId ?? "" };
+    return {
+        token: user.token ?? "",
+        ...state.appConfig.tradeDailog,
+    };
 }
 
 function mapDispatch(dispatch: Dispatch): TradeDailogDispatchProps {
     return {
+        onCloseDailog: () => {
+            dispatch(onTradeDailogClose());
+        },
         editProductTrades: (
             productId: string,
             token: string,
-            userId: string,
             price: string,
             address: Address,
             type: TradeType,
             quantity: string,
-            _id?: string
+            tradeId?: string
         ) => {
             dispatch(
-                getProductDetails({
-                    actionType: GetProductDetailsActionType.CreateTrade,
-                    productId,
-                    token,
-                    price,
-                    address,
-                    type,
-                    quantity,
-                    userId,
-                })
+                tradeId
+                    ? getProductDetails({
+                          actionType: GetProductDetailsActionType.UpdateTrade,
+                          productId,
+                          tradeId,
+                          token,
+                          price,
+                          address,
+                          type,
+                          quantity,
+                      })
+                    : getProductDetails({
+                          actionType: GetProductDetailsActionType.CreateTrade,
+                          productId,
+                          token,
+                          price,
+                          address,
+                          type,
+                          quantity,
+                      })
             );
         },
     };

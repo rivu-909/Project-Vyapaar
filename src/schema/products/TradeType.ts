@@ -1,6 +1,6 @@
 enum TradeType {
-    bid = "BID",
-    ask = "ASK",
+    Bid = "BID",
+    Ask = "ASK",
 }
 
 export default TradeType;

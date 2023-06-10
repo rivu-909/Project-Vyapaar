@@ -7,7 +7,6 @@ export default async function fetchProductsServiceCall(
     params: IFetchProductRequest
 ): Promise<Array<Product>> {
     try {
-        console.log(params.token);
         const response = await axios.get(`${serverUrl}/product/all`, {
             headers: {
                 Authorization: params.token,
