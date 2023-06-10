@@ -1,13 +1,10 @@
-import Address from "./Address";
+import LoadingState from "../LoadingState";
+import ITrade from "./ITrade";
 
-interface Product {
-    category: string;
-    quantity: string;
-    price: number;
-    address: Address;
+export default interface Product {
+    productId: string;
+    name: string;
+    price: string;
     description: string;
-    userId: string;
-    _id: string;
+    trades: Array<ITrade>;
 }
-
-export default Product;

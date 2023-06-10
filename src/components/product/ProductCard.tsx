@@ -1,5 +1,7 @@
-import { StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Product from "../../schema/products/Product";
+import { DetailsScreenNavigationProp } from "../../schema/ReactNavigation";
 import Heading from "../common/Heading";
 
 interface ProductCardProps {
@@ -7,11 +9,20 @@ interface ProductCardProps {
 }
 
 export default function ProductCard(props: ProductCardProps) {
+    const navigation = useNavigation<DetailsScreenNavigationProp>();
+    const goToDetailsHandler = () => {
+        navigation.navigate("Details", { productId: props.product.productId });
+    };
     return (
-        <View style={styles.card}>
-            <Heading label={props.product.description} />
-            <Text> {props.product.price}</Text>
-        </View>
+        <Pressable
+            onPress={goToDetailsHandler}
+            android_ripple={{ color: "grey" }}
+        >
+            <View style={styles.card}>
+                <Heading label={props.product.name} />
+                <Text> {props.product.price}</Text>
+            </View>
+        </Pressable>
     );
 }
 

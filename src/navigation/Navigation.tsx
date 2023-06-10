@@ -1,50 +1,55 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { useEffect } from "react";
 import { connect } from "react-redux";
-import fetchToken from "../actions/auth/fetchToken";
+import startUp from "../actions/boot/startup";
 import LoadingOverlay from "../components/common/LoadingOverlay";
+import LoadingState from "../schema/LoadingState";
 import { Dispatch, RootState } from "../store/store";
 import AuthStack from "./AuthStack";
 import UserHomeStack from "./UserHomeStack";
 
 interface NavigationStateProps {
+    // isNewUser: boolean;
     isAuthenticated: boolean;
-    fetchingToken: boolean;
+    bootState: LoadingState;
 }
 
 interface NavigationDispatchProps {
-    fetchTokenHandler: () => void;
+    start: () => void;
 }
 
 function Navigation(props: NavigationStateProps & NavigationDispatchProps) {
     useEffect(() => {
-        props.fetchTokenHandler();
+        props.start();
     }, []);
 
     return (
-        <NavigationContainer>
-            {props.fetchingToken ? (
-                <LoadingOverlay message="Please wait..." />
-            ) : props.isAuthenticated ? (
-                <UserHomeStack />
+        <>
+            {props.bootState === LoadingState.pending ? (
+                <LoadingOverlay message="Loading..." />
             ) : (
-                <AuthStack />
+                <NavigationContainer>
+                    {props.isAuthenticated ? <UserHomeStack /> : <AuthStack />}
+                </NavigationContainer>
             )}
-        </NavigationContainer>
+        </>
     );
 }
 
 function mapState(state: RootState): NavigationStateProps {
     const user = state.user;
     return {
+        // isNewUser: !!state.user.userId,
         isAuthenticated: !!user.token,
-        fetchingToken: user.fetchingToken,
+        bootState: user.bootState,
     };
 }
 
 function mapDispatch(dispatch: Dispatch): NavigationDispatchProps {
     return {
-        fetchTokenHandler: () => dispatch(fetchToken()),
+        start: () => {
+            startUp(dispatch);
+        },
     };
 }
 

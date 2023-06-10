@@ -18,5 +18,6 @@ const styles = StyleSheet.create({
     },
     headingContainer: {
         marginBottom: 28,
+        alignItems: "center",
     },
 });

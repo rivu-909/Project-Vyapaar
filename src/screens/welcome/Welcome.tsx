@@ -1,10 +1,10 @@
-import { NavigationProp } from "@react-navigation/native";
 import React from "react";
 import { GestureResponderEvent, Text, View } from "react-native";
 import Button from "../../components/common/Button";
+import { WelcomeScreenNavigationProp } from "../../schema/ReactNavigation";
 
 interface WelcomeNavigationProps {
-    navigation: NavigationProp<any, any>;
+    navigation: WelcomeScreenNavigationProp;
 }
 
 export default function Welcome(props: WelcomeNavigationProps) {

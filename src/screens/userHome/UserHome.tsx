@@ -3,15 +3,17 @@ import { connect } from "react-redux";
 import { Dispatch, RootState } from "../../store/store";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
 import Product from "../../schema/products/Product";
-import { useEffect } from "react";
+import React from "react";
 import getProducts from "../../actions/product/getProducts";
 import Button from "../../components/common/Button";
 import ProductList from "../../components/product/ProductList";
-import { logout } from "../../store/reducer/user/userSlice";
+import ProductDailog from "../../components/product/ProductDailog";
+import LoadingState from "../../schema/LoadingState";
+import logoutHandler from "../../actions/auth/logoutHandler";
+import { onShowProductDailog } from "../../store/reducer/appConfig/appConfigSlice";
 
 interface UserHomeStateProps {
-    isLoading: boolean;
-    isFetched: boolean;
+    productLoadingState: LoadingState;
     products: Array<Product>;
     token: string;
 }
@@ -19,31 +21,44 @@ interface UserHomeStateProps {
 interface UserHomeDispatchProps {
     fetchProducts: (token: string) => void;
     logout: () => void;
+    createProductHandler: () => void;
 }
 
 function UserHome(props: UserHomeStateProps & UserHomeDispatchProps) {
-    useEffect(() => {
+    React.useEffect(() => {
         props.fetchProducts(props.token);
     }, []);
 
+    const onCreateProductClick = React.useCallback(() => {
+        props.createProductHandler();
+    }, []);
+
     return (
-        <View style={{ flex: 1, justifyContent: "center" }}>
-            {props.isLoading ? (
-                <LoadingOverlay message="Loading..." />
-            ) : (
-                <ProductList products={props.products} />
-            )}
-            <Button label="Log out" onPress={props.logout} />
-        </View>
+        <>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                {props.productLoadingState === LoadingState.pending ? (
+                    <LoadingOverlay message="Loading..." />
+                ) : (
+                    <ProductList products={props.products} />
+                )}
+
+                <Button
+                    label="Create new product"
+                    onPress={onCreateProductClick}
+                />
+                <Button label="Log out" onPress={props.logout} />
+            </View>
+            <ProductDailog />
+        </>
     );
 }
 
 function mapState(state: RootState): UserHomeStateProps {
+    const products = state.products;
     return {
         token: state.user.token || "",
-        isLoading: state.products.isLoading,
-        isFetched: state.products.isFetched,
-        products: state.products.products,
+        productLoadingState: products.productsLoadingState,
+        products: products.products,
     };
 }
 
@@ -53,7 +68,10 @@ function mapDispatch(dispatch: Dispatch): UserHomeDispatchProps {
             dispatch(getProducts({ token }));
         },
         logout: () => {
-            dispatch(logout());
+            logoutHandler(dispatch);
+        },
+        createProductHandler: () => {
+            dispatch(onShowProductDailog());
         },
     };
 }

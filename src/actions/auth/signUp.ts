@@ -1,17 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ISignUpRequest from "../../schema/servicesSchema/ISignUpRequest";
 import signUpServiceCall from "../../services/auth/signUpServiceCall";
+import cacheUserData from "../../utils/cacheUserData";
+import cacheUserToken from "../../utils/cacheUserToken";
 
 const signUp = createAsyncThunk(
     "user/signUp",
     async (userCred: ISignUpRequest, { rejectWithValue }) => {
         try {
-            const data = await signUpServiceCall(userCred);
-            if (data.token) {
-                return data.token;
-            } else {
-                throw new Error("Sign up failed");
-            }
+            const userData = await signUpServiceCall(userCred);
+            cacheUserToken(userData.token);
+            cacheUserData(userData);
+            return userData;
         } catch (err) {
             return rejectWithValue((err as Error).message);
         }

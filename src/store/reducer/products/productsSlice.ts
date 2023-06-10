@@ -1,12 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import getProductDetails from "../../../actions/product/getProductDetails";
 import getProducts from "../../../actions/product/getProducts";
+import LoadingState from "../../../schema/LoadingState";
 import Product from "../../../schema/products/Product";
-import Products from "../../../schema/products/Products";
+import ProductState from "../../../schema/products/ProductState";
 
-const initialState: Products = {
+const initialState: ProductState = {
     products: [],
-    isLoading: false,
-    isFetched: false,
+    productsLoadingState: LoadingState.idle,
+    productDetailsLoadingState: LoadingState.idle,
 };
 
 const productsSlice = createSlice({
@@ -15,21 +17,55 @@ const productsSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getProducts.pending.type, (state: Products) => {
-                state.isLoading = true;
+
+            // GET ALL PRODUCTS
+
+            .addCase(getProducts.pending.type, (state: ProductState) => {
+                state.productsLoadingState = LoadingState.pending;
             })
             .addCase(
                 getProducts.fulfilled.type,
-                (state: Products, action: PayloadAction<Array<Product>>) => {
-                    console.log("success");
-                    state.isLoading = false;
-                    state.isFetched = true;
+                (
+                    state: ProductState,
+                    action: PayloadAction<Array<Product>>
+                ) => {
+                    state.productsLoadingState = LoadingState.success;
                     state.products = action.payload;
                 }
             )
-            .addCase(getProducts.rejected.type, (state: Products) => {
-                console.log("rejected");
-                state.isLoading = false;
+            .addCase(getProducts.rejected.type, (state: ProductState) => {
+                state.productsLoadingState = LoadingState.failed;
+            })
+
+            // GET PRODUCT DETAILS
+
+            .addCase(getProductDetails.pending.type, (state: ProductState) => {
+                state.productDetailsLoadingState = LoadingState.pending;
+            })
+            .addCase(
+                getProductDetails.fulfilled.type,
+                (
+                    state: ProductState,
+                    action: PayloadAction<Product | null>
+                ) => {
+                    state.productDetailsLoadingState = LoadingState.success;
+
+                    if (!action.payload) {
+                        return;
+                    }
+                    const productIndex = state.products.findIndex(
+                        (p) => p.productId === action.payload!.productId
+                    );
+
+                    if (productIndex === -1) {
+                        state.products.push(action.payload);
+                    } else {
+                        state.products.splice(productIndex, 1, action.payload);
+                    }
+                }
+            )
+            .addCase(getProductDetails.rejected.type, (state: ProductState) => {
+                state.productDetailsLoadingState = LoadingState.failed;
             });
     },
 });

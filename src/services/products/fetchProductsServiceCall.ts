@@ -1,17 +1,20 @@
 import axios from "axios";
 import IFetchProductRequest from "../../schema/servicesSchema/IFetchProductRequest";
-import { serverUrl } from "../constants";
+import { serverUrl } from "../../constants";
+import Product from "../../schema/products/Product";
 
 export default async function fetchProductsServiceCall(
     params: IFetchProductRequest
-) {
+): Promise<Array<Product>> {
     try {
-        const response = await axios.get(serverUrl + "/product/all", {
+        const response = await axios.get(`${serverUrl}/product/all`, {
             headers: {
                 Authorization: params.token,
             },
         });
-        return response;
+
+        const products = response.data.products;
+        return products;
     } catch (err) {
         throw err;
     }
