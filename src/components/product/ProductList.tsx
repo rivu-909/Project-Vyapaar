@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import Product from "../../schema/products/Product";
-import ProductCard from "./productCard";
+import ProductCard from "./ProductCard";
 
 interface ProductListProps {
     products: Array<Product>;
