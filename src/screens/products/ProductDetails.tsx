@@ -7,7 +7,7 @@ import Heading from "../../components/common/Heading";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
 import ConfirmRequestDailog from "../../components/dailogs/ConfirmRequestDailog";
 import TradeDailog from "../../components/product/TradeDailog";
-import TradeList from "../../components/product/TradeLists";
+import TradeList from "../../components/product/TradeList";
 import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
 import LoadingState from "../../schema/LoadingState";
 import Product from "../../schema/products/Product";

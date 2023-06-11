@@ -50,7 +50,6 @@ function SignUpForm(props: SignUpFormDispatchProps) {
                 inputs.password,
                 inputs.gstin
             );
-            console.log(response);
         } catch (err) {
             console.log(err);
         }

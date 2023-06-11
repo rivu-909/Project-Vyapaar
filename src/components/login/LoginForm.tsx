@@ -37,7 +37,6 @@ function LogInForm(props: LogInFormDispatchProps) {
                 inputs.phoneNumber,
                 inputs.password
             );
-            console.log(response);
         } catch (err) {
             console.log(err);
         }

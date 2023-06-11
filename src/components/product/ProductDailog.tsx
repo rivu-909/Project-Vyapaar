@@ -47,7 +47,6 @@ function ProductDailog(
     };
 
     const onSubmit = () => {
-        console.log(inputs);
         props.onChangeProducts(
             props.token,
             inputs.name,
