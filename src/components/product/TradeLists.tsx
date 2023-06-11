@@ -1,7 +1,7 @@
 import { FlatList, StyleSheet, View } from "react-native";
 import ITrade from "../../schema/products/ITrade";
 import TradeType from "../../schema/products/TradeType";
-import Trade from "./Trade";
+import TradeCard from "./TradeCard";
 
 interface TradeListProps {
     trades: Array<ITrade>;
@@ -10,7 +10,7 @@ interface TradeListProps {
 
 export default function TradeList(props: TradeListProps) {
     const renderTrade = ({ item }: { item: ITrade }) => {
-        return <Trade trade={item} productId={props.productId} />;
+        return <TradeCard trade={item} productId={props.productId} />;
     };
 
     const renderFlatList = (trades: Array<ITrade>, productId: string) => {

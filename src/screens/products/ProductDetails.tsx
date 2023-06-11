@@ -5,8 +5,9 @@ import getProductDetails from "../../actions/product/getProductDetails";
 import Button from "../../components/common/Button";
 import Heading from "../../components/common/Heading";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
+import ConfirmRequestDailog from "../../components/dailogs/ConfirmRequestDailog";
 import TradeDailog from "../../components/product/TradeDailog";
-import TradeList from "../../components/product/TradeList";
+import TradeList from "../../components/product/TradeLists";
 import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
 import LoadingState from "../../schema/LoadingState";
 import Product from "../../schema/products/Product";
@@ -69,6 +70,7 @@ function ProductDetails(
                 <Button label="Ask" onPress={AskHandler} />
             </View>
             <TradeDailog />
+            <ConfirmRequestDailog />
         </>
     );
 }

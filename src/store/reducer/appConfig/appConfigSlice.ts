@@ -9,6 +9,12 @@ interface TradeDetails {
     trade?: ITrade;
 }
 
+interface RequestDetails {
+    productId: string;
+    tradeId: string;
+    userId: string;
+}
+
 const initialTradeDailogState = {
     visible: false,
     productId: "",
@@ -20,9 +26,17 @@ const initialProductDailogState = {
     visible: false,
 };
 
+const initialRequestConfirmDailogState = {
+    visible: false,
+    productId: null,
+    tradeId: null,
+    userId: null,
+};
+
 const initialState: AppConfigState = {
     tradeDailog: initialTradeDailogState,
     productDailog: initialProductDailogState,
+    requestConfiirmDailog: initialRequestConfirmDailogState,
 };
 
 const appConfigSlice = createSlice({
@@ -52,6 +66,23 @@ const appConfigSlice = createSlice({
         onCloseProductDailog: (state: AppConfigState) => {
             state.productDailog.visible = false;
         },
+
+        // REQUEST CONFIRM DAILOG
+        onShowRequestConfirmDailog: (
+            state: AppConfigState,
+            action: PayloadAction<RequestDetails>
+        ) => {
+            state.requestConfiirmDailog.visible = true;
+            state.requestConfiirmDailog.productId = action.payload.productId;
+            state.requestConfiirmDailog.tradeId = action.payload.tradeId;
+            state.requestConfiirmDailog.userId = action.payload.userId;
+        },
+        onCloseRequestConfirmDailog: (state: AppConfigState) => {
+            state.requestConfiirmDailog.visible = false;
+            state.requestConfiirmDailog.productId = null;
+            state.requestConfiirmDailog.tradeId = null;
+            state.requestConfiirmDailog.userId = null;
+        },
     },
 });
 
@@ -60,5 +91,7 @@ export const {
     onShowTradeDailog,
     onShowProductDailog,
     onCloseProductDailog,
+    onShowRequestConfirmDailog,
+    onCloseRequestConfirmDailog,
 } = appConfigSlice.actions;
 export default appConfigSlice.reducer;

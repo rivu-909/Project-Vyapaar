@@ -3,26 +3,37 @@ import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import ITrade from "../../schema/products/ITrade";
 import TradeType from "../../schema/products/TradeType";
-import { onShowTradeDailog } from "../../store/reducer/appConfig/appConfigSlice";
+import {
+    onShowRequestConfirmDailog,
+    onShowTradeDailog,
+} from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
 import Button from "../common/Button";
 import Heading from "../common/Heading";
 
-interface TradeProps {
+interface TradeCardProps {
     trade: ITrade;
     productId: string;
 }
 
-interface TradeStateProps {
+interface TradeCardStateProps {
     userId: string;
 }
 
-interface TradeDispatchProps {
+interface TradeCardDispatchProps {
     onEdit: (productId: string, tradeType: TradeType, trade: ITrade) => void;
+    onRequest: (userId: string, productId: string, tradeId: string) => void;
 }
 
-function Trade(props: TradeProps & TradeStateProps & TradeDispatchProps) {
+function TradeCard(
+    props: TradeCardProps & TradeCardStateProps & TradeCardDispatchProps
+) {
     const { price, address, type } = props.trade;
+
+    const requestHandler = React.useCallback(() => {
+        props.onRequest(props.userId, props.productId, props.trade._id);
+    }, [props.userId, props.productId, props.trade._id]);
+
     const editTradeHandler = React.useCallback(() => {
         props.onEdit(props.productId, props.trade.type, props.trade);
     }, [props.productId, props.trade]);
@@ -34,6 +45,7 @@ function Trade(props: TradeProps & TradeStateProps & TradeDispatchProps) {
             <Text>
                 {address.district} | {address.state}
             </Text>
+            <Button label="Request" onPress={requestHandler} />
             {props.userId === props.trade.userId ? (
                 <Button label="Edit" onPress={editTradeHandler} />
             ) : null}
@@ -54,18 +66,23 @@ const styles = StyleSheet.create({
     },
 });
 
-function mapState(state: RootState): TradeStateProps {
+function mapState(state: RootState): TradeCardStateProps {
     return {
         userId: state.user.userId ?? "",
     };
 }
 
-function mapDispatch(dispatch: Dispatch): TradeDispatchProps {
+function mapDispatch(dispatch: Dispatch): TradeCardDispatchProps {
     return {
         onEdit: (productId: string, tradeType: TradeType, trade: ITrade) => {
             dispatch(onShowTradeDailog({ productId, tradeType, trade }));
         },
+        onRequest: (userId: string, productId: string, tradeId: string) => {
+            dispatch(
+                onShowRequestConfirmDailog({ userId, productId, tradeId })
+            );
+        },
     };
 }
 
-export default connect(mapState, mapDispatch)(Trade);
+export default connect(mapState, mapDispatch)(TradeCard);
