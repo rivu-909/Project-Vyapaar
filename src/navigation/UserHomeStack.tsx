@@ -7,7 +7,12 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function UserHomeStack() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+        // screenOptions={{
+        //     headerShown: false,
+        //     contentStyle: { backgroundColor: "white" }, // very important
+        // }}
+        >
             <Stack.Screen name="UserHome" component={UserHome} />
             <Stack.Screen name="Details" component={ProductDetails} />
         </Stack.Navigator>

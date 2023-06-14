@@ -15,7 +15,7 @@ interface InputProps {
 
 export default function Input(props: InputProps) {
     return (
-        <View>
+        <View style={styles.root}>
             <Text style={[styles.label, !!props.invalid && styles.errorLabel]}>
                 {props.label}
             </Text>
@@ -29,17 +29,21 @@ export default function Input(props: InputProps) {
 }
 
 const styles = StyleSheet.create({
+    root: {
+        marginHorizontal: 8,
+        marginVertical: 12,
+    },
     label: {
-        fontSize: 16,
-        margin: 4,
+        fontSize: 14,
+        marginBottom: 8,
+        fontFamily: "MerriweatherLight",
     },
     input: {
-        padding: 4,
-        borderColor: "black",
-        borderWidth: 1,
+        paddingBottom: 8,
+        borderBottomColor: "black",
+        borderBottomWidth: 1,
         minWidth: 250,
-        borderRadius: 4,
-        marginBottom: 12,
+        fontFamily: "MerriweatherLight",
     },
     errorLabel: {
         color: "red",

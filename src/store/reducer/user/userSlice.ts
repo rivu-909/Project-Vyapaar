@@ -12,7 +12,7 @@ const initialState: UserState = {
     phoneNumber: null,
     loginState: LoadingState.idle,
     signUpState: LoadingState.idle,
-    bootState: LoadingState.idle,
+    bootState: LoadingState.pending,
 };
 
 const userSlice = createSlice({

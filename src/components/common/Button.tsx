@@ -4,22 +4,30 @@ import {
     StyleSheet,
     Text,
     View,
+    StyleProp,
+    ViewStyle,
+    TextStyle,
 } from "react-native";
 
 interface ButtonProps {
     onPress: (evt: GestureResponderEvent) => void;
     label: string;
+    containerStyle?: StyleProp<ViewStyle>;
+    labelStyle?: StyleProp<TextStyle>;
+    androidRippleColor?: string;
 }
 
 export default function Button(props: ButtonProps) {
     return (
-        <View style={styles.buttonOuterContainer}>
+        <View style={[styles.buttonOuterContainer, props.containerStyle]}>
             <Pressable
                 onPress={props.onPress}
-                android_ripple={{ color: "grey" }}
+                android_ripple={{ color: props.androidRippleColor }}
             >
                 <View style={styles.buttonInnerContainer}>
-                    <Text style={styles.buttonText}>{props.label}</Text>
+                    <Text style={[styles.buttonText, props.labelStyle]}>
+                        {props.label}
+                    </Text>
                 </View>
             </Pressable>
         </View>
@@ -28,18 +36,16 @@ export default function Button(props: ButtonProps) {
 
 const styles = StyleSheet.create({
     buttonOuterContainer: {
-        borderRadius: 28,
         margin: 4,
         overflow: "hidden", // to make the ripple effect outside the container to cut off
-    },
-    buttonInnerContainer: {
-        backgroundColor: "black",
-        paddingVertical: 8,
-        paddingHorizontal: 16,
         elevation: 2,
     },
+    buttonInnerContainer: {
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+    },
     buttonText: {
-        color: "white",
         textAlign: "center",
+        fontFamily: "MerriweatherRegular",
     },
 });

@@ -4,7 +4,7 @@ import Main from "./src/Main";
 export default function App() {
     return (
         <>
-            <StatusBar style="auto" />
+            <StatusBar style="light" />
             <Main />
         </>
     );

@@ -5,3 +5,5 @@
 -   data validation
 -   make the get started one time visit based on cached data
 -   replace flatList with scroll view
+
+-   remove start code and use directly in the navigation.tsx

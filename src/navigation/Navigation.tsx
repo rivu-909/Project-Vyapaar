@@ -26,7 +26,10 @@ function Navigation(props: NavigationStateProps & NavigationDispatchProps) {
     return (
         <>
             {props.bootState === LoadingState.pending ? (
-                <LoadingOverlay message="Loading..." />
+                <LoadingOverlay
+                    message="Loading..."
+                    style={{ backgroundColor: "black" }}
+                />
             ) : (
                 <NavigationContainer>
                     {props.isAuthenticated ? <UserHomeStack /> : <AuthStack />}
