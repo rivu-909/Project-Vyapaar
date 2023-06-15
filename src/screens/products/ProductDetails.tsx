@@ -60,14 +60,31 @@ function ProductDetails(
     ) : (
         <>
             <View style={styles.screen}>
-                <Heading label={product.name} />
                 <View style={styles.productInfo}>
-                    <Text>{product.description}</Text>
-                    <Text>{product.price}</Text>
+                    <Heading
+                        label={product.description}
+                        labelStyle={styles.textStyles}
+                    />
+                    <Heading
+                        label={`₹ ${product.price}`}
+                        labelStyle={styles.textStyles}
+                    />
                 </View>
                 <TradeList trades={product.trades} productId={productId} />
-                <Button label="Bid" onPress={BidHandler} />
-                <Button label="Ask" onPress={AskHandler} />
+                <View style={styles.buttonsContainer}>
+                    <Button
+                        label="Bid"
+                        onPress={BidHandler}
+                        containerStyle={styles.buttonContainerStyle}
+                        labelStyle={styles.buttonLabelStyle}
+                    />
+                    <Button
+                        label="Ask"
+                        onPress={AskHandler}
+                        containerStyle={styles.buttonContainerStyle}
+                        labelStyle={styles.buttonLabelStyle}
+                    />
+                </View>
             </View>
             <TradeDailog />
             <ConfirmRequestDailog />
@@ -80,7 +97,26 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     productInfo: {
-        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginHorizontal: 28,
+        borderBottomWidth: 1,
+        marginBottom: 4,
+    },
+    textStyles: {
+        fontSize: 20,
+    },
+    buttonsContainer: {
+        flexDirection: "row",
+        margin: 8,
+    },
+    buttonContainerStyle: {
+        flex: 1,
+        borderRadius: 8,
+        backgroundColor: "black",
+    },
+    buttonLabelStyle: {
+        color: "white",
     },
 });
 

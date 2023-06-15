@@ -1,30 +1,31 @@
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { Dispatch, RootState } from "../../store/store";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
 import Product from "../../schema/products/Product";
 import React from "react";
 import getProducts from "../../actions/product/getProducts";
-import Button from "../../components/common/Button";
 import ProductList from "../../components/product/ProductList";
 import ProductDailog from "../../components/product/ProductDailog";
 import LoadingState from "../../schema/LoadingState";
 import logoutHandler from "../../actions/auth/logoutHandler";
 import { onShowProductDailog } from "../../store/reducer/appConfig/appConfigSlice";
+import IconButton from "../../components/common/IconButton";
+import { Ionicons } from "@expo/vector-icons";
 
-interface UserHomeStateProps {
+interface AllProductsStateProps {
     productLoadingState: LoadingState;
     products: Array<Product>;
     token: string;
 }
 
-interface UserHomeDispatchProps {
+interface AllProductsDispatchProps {
     fetchProducts: (token: string) => void;
     logout: () => void;
     createProductHandler: () => void;
 }
 
-function UserHome(props: UserHomeStateProps & UserHomeDispatchProps) {
+function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
     React.useEffect(() => {
         props.fetchProducts(props.token);
     }, []);
@@ -35,25 +36,54 @@ function UserHome(props: UserHomeStateProps & UserHomeDispatchProps) {
 
     return (
         <>
-            <View style={{ flex: 1, justifyContent: "center" }}>
+            <View style={styles.root}>
                 {props.productLoadingState === LoadingState.pending ? (
                     <LoadingOverlay message="Loading..." />
                 ) : (
                     <ProductList products={props.products} />
                 )}
-
-                <Button
-                    label="Create new product"
-                    onPress={onCreateProductClick}
-                />
-                <Button label="Log out" onPress={props.logout} />
+                <View style={styles.buttonContainer}>
+                    <IconButton
+                        onPress={onCreateProductClick}
+                        containerStyle={styles.addIconContainer}
+                    >
+                        <Ionicons
+                            name={"add"}
+                            size={48}
+                            color="white"
+                            style={styles.iconStyle}
+                        />
+                    </IconButton>
+                </View>
+                {/* <Button label="Log out" onPress={props.logout} /> */}
             </View>
             <ProductDailog />
         </>
     );
 }
 
-function mapState(state: RootState): UserHomeStateProps {
+const styles = StyleSheet.create({
+    root: {
+        flex: 1,
+    },
+    addIconContainer: {
+        margin: 0,
+        backgroundColor: "black",
+        height: 48,
+        width: 48,
+        borderRadius: 12,
+    },
+    buttonContainer: {
+        marginTop: 4,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    iconStyle: {
+        paddingLeft: 3, // to center ionicons
+    },
+});
+
+function mapState(state: RootState): AllProductsStateProps {
     const products = state.products;
     return {
         token: state.user.token || "",
@@ -62,7 +92,7 @@ function mapState(state: RootState): UserHomeStateProps {
     };
 }
 
-function mapDispatch(dispatch: Dispatch): UserHomeDispatchProps {
+function mapDispatch(dispatch: Dispatch): AllProductsDispatchProps {
     return {
         fetchProducts: (token: string) => {
             dispatch(getProducts({ token }));
@@ -76,4 +106,4 @@ function mapDispatch(dispatch: Dispatch): UserHomeDispatchProps {
     };
 }
 
-export default connect(mapState, mapDispatch)(UserHome);
+export default connect(mapState, mapDispatch)(AllProducts);

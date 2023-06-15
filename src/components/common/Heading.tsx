@@ -16,7 +16,7 @@ interface HeadingProps {
 export default function Heading(props: HeadingProps) {
     return (
         <View style={[styles.root, props.containerStyle]}>
-            <Text style={[styles.label, props.labelStyle]}> {props.label}</Text>
+            <Text style={[styles.label, props.labelStyle]}>{props.label}</Text>
         </View>
     );
 }

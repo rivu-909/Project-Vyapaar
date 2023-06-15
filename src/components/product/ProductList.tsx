@@ -25,7 +25,6 @@ export default function ProductList(props: ProductListProps) {
 
 const styles = StyleSheet.create({
     productList: {
-        flex: 1,
         padding: 8,
     },
 });

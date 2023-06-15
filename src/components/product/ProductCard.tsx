@@ -11,7 +11,10 @@ interface ProductCardProps {
 export default function ProductCard(props: ProductCardProps) {
     const navigation = useNavigation<DetailsScreenNavigationProp>();
     const goToDetailsHandler = () => {
-        navigation.navigate("Details", { productId: props.product.productId });
+        navigation.navigate("Details", {
+            productId: props.product.productId,
+            name: props.product.name,
+        });
     };
     return (
         <Pressable
@@ -19,22 +22,47 @@ export default function ProductCard(props: ProductCardProps) {
             android_ripple={{ color: "grey" }}
         >
             <View style={styles.card}>
-                <Heading label={props.product.name} />
-                <Text> {props.product.price}</Text>
+                <View>
+                    <Heading
+                        label={props.product.name}
+                        labelStyle={styles.headingLabelStyle}
+                        containerStyle={styles.headingContainerStyle}
+                    />
+                    <Heading
+                        label={props.product.description}
+                        labelStyle={styles.descriptionLabelStyle}
+                        containerStyle={styles.headingContainerStyle}
+                    />
+                </View>
+                <Heading
+                    label={`₹ ${props.product.price}`}
+                    labelStyle={styles.priceLabelStyle}
+                />
             </View>
         </Pressable>
     );
 }
 
 const styles = StyleSheet.create({
+    headingContainerStyle: {
+        marginVertical: 4,
+    },
+    headingLabelStyle: {
+        fontSize: 24,
+    },
+    descriptionLabelStyle: {
+        fontSize: 18,
+    },
+    priceLabelStyle: {
+        fontSize: 24,
+    },
     card: {
-        padding: 8,
+        padding: 12,
         flex: 1,
-        margin: 4,
-        backgroundColor: "white",
-        borderColor: "grey",
-        borderWidth: 1,
-        borderRadius: 4,
+        marginVertical: 4,
+        marginHorizontal: 8,
+        backgroundColor: "#F5F5F5",
+        borderRadius: 8,
         flexDirection: "row",
         justifyContent: "space-between",
     },

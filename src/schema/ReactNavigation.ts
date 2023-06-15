@@ -6,9 +6,11 @@ export type RootStackParamList = {
     Welcome: undefined;
     Login: undefined;
     SignUp: undefined;
-    UserHome: undefined;
+    Home: undefined;
+    AllProducts: undefined;
     Details: {
         productId: string;
+        name: string;
     };
 };
 
