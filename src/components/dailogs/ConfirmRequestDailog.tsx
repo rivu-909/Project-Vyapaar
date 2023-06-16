@@ -33,9 +33,26 @@ function ConfirmRequestDailog(
     return (
         <DailogBox onClose={props.onCancelRequest} visible={props.visible}>
             <View style={styles.centeredView}>
-                <Heading label="Are you interested in this trade?" />
-                <Button label="Confirm" onPress={onConfirm} />
-                <Button label="Cancel" onPress={props.onCancelRequest} />
+                <Heading
+                    label="Request the user?"
+                    labelStyle={styles.headingLabel}
+                />
+                <View style={styles.buttonsContainer}>
+                    <Button
+                        label="Confirm"
+                        onPress={onConfirm}
+                        containerStyle={{
+                            ...styles.buttonContainerStyle,
+                            ...styles.buttonContainerDark,
+                        }}
+                        labelStyle={styles.buttonText}
+                    />
+                    <Button
+                        label="Cancel"
+                        onPress={props.onCancelRequest}
+                        containerStyle={styles.buttonContainerStyle}
+                    />
+                </View>
             </View>
         </DailogBox>
     );
@@ -43,17 +60,32 @@ function ConfirmRequestDailog(
 
 const styles = StyleSheet.create({
     centeredView: {
-        flex: 1,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "white",
         borderRadius: 20,
         padding: 35,
     },
-
-    modalText: {
-        marginBottom: 15,
-        textAlign: "center",
+    headingLabel: {
+        fontSize: 28,
+    },
+    buttonsContainer: {
+        width: "100%",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "center",
+        marginRight: 20,
+    },
+    buttonContainerStyle: {
+        flex: 1,
+        borderRadius: 8,
+        backgroundColor: "#D3D3D3",
+    },
+    buttonContainerDark: {
+        backgroundColor: "black",
+    },
+    buttonText: {
+        color: "white",
     },
 });
 

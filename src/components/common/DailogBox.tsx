@@ -22,7 +22,10 @@ export default function DailogBox(props: DailogBoxProps) {
 const styles = StyleSheet.create({
     dailogBox: {
         flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
         marginHorizontal: 20,
         marginVertical: 40,
+        backgroundColor: "rgba(255,255,255,0.80)",
     },
 });
