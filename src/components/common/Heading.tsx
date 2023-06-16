@@ -24,6 +24,7 @@ export default function Heading(props: HeadingProps) {
 const styles = StyleSheet.create({
     root: {
         marginVertical: 16,
+        marginHorizontal: 8,
     },
     label: {
         fontFamily: "MerriweatherRegular",

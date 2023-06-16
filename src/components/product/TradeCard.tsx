@@ -1,17 +1,15 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import ITrade from "../../schema/products/ITrade";
-import TradeType from "../../schema/products/TradeType";
-import {
-    onShowRequestConfirmDailog,
-    onShowTradeDailog,
-} from "../../store/reducer/appConfig/appConfigSlice";
+import { onShowRequestConfirmDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
 import Button from "../common/Button";
 import Heading from "../common/Heading";
 import IconButton from "../common/IconButton";
+import { useNavigation } from "@react-navigation/native";
+import { CreateTradeScreenNavigationProp } from "../../schema/ReactNavigation";
 
 interface TradeCardProps {
     trade: ITrade;
@@ -23,7 +21,6 @@ interface TradeCardStateProps {
 }
 
 interface TradeCardDispatchProps {
-    onEdit: (productId: string, tradeType: TradeType, trade: ITrade) => void;
     onRequest: (userId: string, productId: string, tradeId: string) => void;
 }
 
@@ -36,8 +33,13 @@ function TradeCard(
         props.onRequest(props.userId, props.productId, props.trade._id);
     }, [props.userId, props.productId, props.trade._id]);
 
+    const navigation = useNavigation<CreateTradeScreenNavigationProp>();
     const editTradeHandler = React.useCallback(() => {
-        props.onEdit(props.productId, props.trade.type, props.trade);
+        navigation.navigate("CreateTrade", {
+            productId: props.productId,
+            tradeType: props.trade.type,
+            trade: props.trade,
+        });
     }, [props.productId, props.trade]);
 
     return (
@@ -46,8 +48,13 @@ function TradeCard(
                 <Heading
                     label={`${address.district} | ${address.state}`}
                     labelStyle={styles.titleLabel}
+                    containerStyle={styles.headingContainer}
                 />
-                <Heading label={`₹ ${price}`} labelStyle={styles.titleLabel} />
+                <Heading
+                    label={`₹ ${price}`}
+                    labelStyle={styles.titleLabel}
+                    containerStyle={styles.headingContainer}
+                />
             </View>
             <View style={styles.buttonsContainer}>
                 <Button
@@ -79,6 +86,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: "space-between",
     },
+    headingContainer: {
+        marginHorizontal: 0,
+        marginVertical: 8,
+    },
     titleContainer: {
         marginHorizontal: 4,
         flexDirection: "row",
@@ -98,8 +109,8 @@ const styles = StyleSheet.create({
     },
     iconButtonStyle: {
         margin: 0,
-        paddingHorizontal: 8,
-        paddingVertical: 8,
+        paddingHorizontal: 10,
+        paddingVertical: 12,
         borderRadius: 8,
         backgroundColor: "#808080",
     },
@@ -116,9 +127,6 @@ function mapState(state: RootState): TradeCardStateProps {
 
 function mapDispatch(dispatch: Dispatch): TradeCardDispatchProps {
     return {
-        onEdit: (productId: string, tradeType: TradeType, trade: ITrade) => {
-            dispatch(onShowTradeDailog({ productId, tradeType, trade }));
-        },
         onRequest: (userId: string, productId: string, tradeId: string) => {
             dispatch(
                 onShowRequestConfirmDailog({ userId, productId, tradeId })

@@ -11,7 +11,9 @@ export default function AuthStack() {
         <Stack.Navigator
             screenOptions={{
                 headerShown: false,
-                contentStyle: { backgroundColor: "white" }, // very important
+                animation: "slide_from_right",
+                statusBarStyle: "light",
+                statusBarColor: "black",
             }}
         >
             <Stack.Screen name="Welcome" component={Welcome} />

@@ -43,8 +43,6 @@ function LogInForm(props: LogInFormDispatchProps) {
         }
     };
 
-    console.log("loaded loginform");
-
     return (
         <View style={styles.root}>
             <Heading label="Log In" />

@@ -12,6 +12,9 @@ import logoutHandler from "../../actions/auth/logoutHandler";
 import { onShowProductDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import IconButton from "../../components/common/IconButton";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import { CreateProductScreenNavigationProp } from "../../schema/ReactNavigation";
+import { useNavigation } from "@react-navigation/native";
 
 interface AllProductsStateProps {
     productLoadingState: LoadingState;
@@ -34,27 +37,33 @@ function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
         props.createProductHandler();
     }, []);
 
+    const navigation = useNavigation<CreateProductScreenNavigationProp>();
+    const openCreateProductHandler = () => {
+        navigation.navigate("CreateProduct");
+    };
+
     return (
         <>
             <View style={styles.root}>
                 {props.productLoadingState === LoadingState.pending ? (
                     <LoadingOverlay message="Loading..." />
                 ) : (
-                    <ProductList products={props.products} />
+                    <>
+                        <ProductList products={props.products} />
+                        <View style={styles.buttonContainer}>
+                            <IconButton
+                                onPress={openCreateProductHandler}
+                                containerStyle={styles.addIconContainer}
+                            >
+                                <MaterialIcons
+                                    name="add"
+                                    size={40}
+                                    color="white"
+                                />
+                            </IconButton>
+                        </View>
+                    </>
                 )}
-                <View style={styles.buttonContainer}>
-                    <IconButton
-                        onPress={onCreateProductClick}
-                        containerStyle={styles.addIconContainer}
-                    >
-                        <Ionicons
-                            name={"add"}
-                            size={48}
-                            color="white"
-                            style={styles.iconStyle}
-                        />
-                    </IconButton>
-                </View>
                 {/* <Button label="Log out" onPress={props.logout} /> */}
             </View>
             <ProductDailog />
@@ -74,12 +83,9 @@ const styles = StyleSheet.create({
         borderRadius: 12,
     },
     buttonContainer: {
-        marginTop: 4,
+        marginVertical: 8,
         justifyContent: "center",
         alignItems: "center",
-    },
-    iconStyle: {
-        paddingLeft: 3, // to center ionicons
     },
 });
 

@@ -6,18 +6,28 @@ import {
 } from "../schema/ReactNavigation";
 import ProductDetails from "../screens/products/ProductDetails";
 import Home from "./Home";
+import CreateProduct from "../screens/products/CreateProduct";
+import CreateTrade from "../screens/products/CreateTrade";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function UserHomeStack() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                contentStyle: {
+                    ...styles.contentBackground,
+                },
+                animation: "slide_from_right",
+                statusBarStyle: "light",
+                statusBarColor: "black",
+            }}
+        >
             <Stack.Screen
                 name="Home"
                 component={Home}
                 options={{
                     headerShown: false,
-                    contentStyle: styles.contentBackground,
                 }}
             />
             <Stack.Screen
@@ -27,8 +37,22 @@ export default function UserHomeStack() {
                     title: route.params.name,
                     headerTitleStyle: styles.detailsTitle,
                     headerTitleAlign: "center",
-                    contentStyle: styles.contentBackground,
+                    contentStyle: { ...styles.contentBackground, marginTop: 0 },
                 })}
+            />
+            <Stack.Screen
+                name="CreateProduct"
+                component={CreateProduct}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name="CreateTrade"
+                component={CreateTrade}
+                options={{
+                    headerShown: false,
+                }}
             />
         </Stack.Navigator>
     );
@@ -36,7 +60,7 @@ export default function UserHomeStack() {
 
 const styles = StyleSheet.create({
     detailsTitle: {
-        fontFamily: "Merriweather",
+        fontFamily: "MerriweatherRegular",
         fontSize: 28,
     },
     contentBackground: {

@@ -7,6 +7,7 @@ import {
     Image,
 } from "react-native";
 import Button from "../../components/common/Button";
+import Heading from "../../components/common/Heading";
 import { WelcomeScreenNavigationProp } from "../../schema/ReactNavigation";
 
 interface WelcomeNavigationProps {
@@ -20,10 +21,10 @@ export default function Welcome(props: WelcomeNavigationProps) {
     };
     return (
         <View style={styles.root}>
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.titleImage}
-                    source={require("../../../assets/AppTitle.png")}
+            <View style={styles.headingContainer}>
+                <Heading
+                    label="Bid Ask 'n' Trade"
+                    labelStyle={styles.headingLabel}
                 />
             </View>
             <Text style={styles.sloganLabel}>
@@ -47,7 +48,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    imageContainer: {
+    headingLabel: {
+        fontFamily: "Lobster",
+        color: "white",
+        fontSize: 48,
+    },
+    headingContainer: {
         justifyContent: "center",
         alignItems: "center",
     },

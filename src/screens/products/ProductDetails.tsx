@@ -12,13 +12,17 @@ import GetProductDetailsActionType from "../../schema/GetProductDetailsActionTyp
 import LoadingState from "../../schema/LoadingState";
 import Product from "../../schema/products/Product";
 import TradeType from "../../schema/products/TradeType";
-import { DetailsScreenRouteProp } from "../../schema/ReactNavigation";
+import {
+    DetailsScreenNavigationProp,
+    DetailsScreenRouteProp,
+} from "../../schema/ReactNavigation";
 import { onShowTradeDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
 import getProductFromId from "../../utils/getProductFromId";
 
 interface ProductDetailsProps {
     route: DetailsScreenRouteProp;
+    navigation: DetailsScreenNavigationProp;
 }
 
 interface ProductDetailsStateProps {
@@ -48,11 +52,19 @@ function ProductDetails(
     }, []);
 
     const BidHandler = React.useCallback(() => {
-        props.onBidAsk(productId, TradeType.Bid);
+        props.navigation.navigate("CreateTrade", {
+            productId,
+            tradeType: TradeType.Bid,
+            trade: null,
+        });
     }, [productId]);
 
     const AskHandler = React.useCallback(() => {
-        props.onBidAsk(productId, TradeType.Ask);
+        props.navigation.navigate("CreateTrade", {
+            productId,
+            tradeType: TradeType.Ask,
+            trade: null,
+        });
     }, [productId]);
 
     return !isTradesLoaded ? (
@@ -64,10 +76,12 @@ function ProductDetails(
                     <Heading
                         label={product.description}
                         labelStyle={styles.textStyles}
+                        containerStyle={styles.headingContainer}
                     />
                     <Heading
                         label={`₹ ${product.price}`}
                         labelStyle={styles.textStyles}
+                        containerStyle={styles.headingContainer}
                     />
                 </View>
                 <TradeList trades={product.trades} productId={productId} />
@@ -86,7 +100,6 @@ function ProductDetails(
                     />
                 </View>
             </View>
-            <TradeDailog />
             <ConfirmRequestDailog />
         </>
     );
@@ -95,6 +108,11 @@ function ProductDetails(
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
+    },
+    headingContainer: {
+        marginVertical: 0,
+        marginTop: 16,
+        paddingBottom: 8,
     },
     productInfo: {
         flexDirection: "row",

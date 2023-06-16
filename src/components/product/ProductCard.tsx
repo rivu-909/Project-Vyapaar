@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import Product from "../../schema/products/Product";
 import { DetailsScreenNavigationProp } from "../../schema/ReactNavigation";
 import Heading from "../common/Heading";
@@ -59,8 +59,7 @@ const styles = StyleSheet.create({
     card: {
         padding: 12,
         flex: 1,
-        marginVertical: 4,
-        marginHorizontal: 8,
+        margin: 4,
         backgroundColor: "#F5F5F5",
         borderRadius: 8,
         flexDirection: "row",

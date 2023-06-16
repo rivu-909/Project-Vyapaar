@@ -28,7 +28,7 @@ export default function Home() {
 
 const styles = StyleSheet.create({
     tabBarLabelStyle: {
-        fontFamily: "Merriweather",
+        fontFamily: "MerriweatherRegular",
         fontSize: 16,
     },
 });
