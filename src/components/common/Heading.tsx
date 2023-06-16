@@ -1,23 +1,33 @@
-import { StyleSheet, Text, View } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    StyleProp,
+    TextStyle,
+    ViewStyle,
+} from "react-native";
 
 interface HeadingProps {
     label: string;
+    labelStyle?: StyleProp<TextStyle>;
+    containerStyle?: StyleProp<ViewStyle>;
 }
 
 export default function Heading(props: HeadingProps) {
     return (
-        <View style={styles.headingContainer}>
-            <Text style={styles.label}> {props.label}</Text>
+        <View style={[styles.root, props.containerStyle]}>
+            <Text style={[styles.label, props.labelStyle]}>{props.label}</Text>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    label: {
-        fontSize: 20,
+    root: {
+        marginVertical: 16,
+        marginHorizontal: 8,
     },
-    headingContainer: {
-        marginBottom: 28,
-        alignItems: "center",
+    label: {
+        fontFamily: "MerriweatherRegular",
+        fontSize: 36,
     },
 });

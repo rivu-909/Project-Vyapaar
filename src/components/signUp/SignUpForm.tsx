@@ -1,4 +1,5 @@
 import React from "react";
+import { StyleSheet, View, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import Button from "../common/Button";
 import { Dispatch } from "../../store/store";
@@ -50,15 +51,14 @@ function SignUpForm(props: SignUpFormDispatchProps) {
                 inputs.password,
                 inputs.gstin
             );
-            console.log(response);
         } catch (err) {
             console.log(err);
         }
     };
 
     return (
-        <>
-            <Heading label="Please sign up" />
+        <View style={styles.root}>
+            <Heading label="Sign Up" />
             <Input
                 label="Name"
                 textInputConfig={{
@@ -104,10 +104,30 @@ function SignUpForm(props: SignUpFormDispatchProps) {
                     placeholder: "Your GSTIN",
                 }}
             />
-            <Button onPress={onSignUp} label="SignUp" />
-        </>
+            <Button
+                onPress={onSignUp}
+                label="SignUp"
+                containerStyle={styles.buttonContainerStyle}
+                labelStyle={styles.buttonLabelStyle}
+            />
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    root: {
+        margin: 8,
+        marginBottom: 0,
+        alignItems: "flex-start",
+    },
+    buttonContainerStyle: {
+        borderRadius: 8,
+        backgroundColor: "black",
+    },
+    buttonLabelStyle: {
+        color: "white",
+    },
+});
 
 function mapDispatch(dispatch: Dispatch): SignUpFormDispatchProps {
     return {

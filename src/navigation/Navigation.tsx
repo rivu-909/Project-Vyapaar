@@ -1,10 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
-import { useEffect } from "react";
 import { connect } from "react-redux";
-import startUp from "../actions/boot/startup";
-import LoadingOverlay from "../components/common/LoadingOverlay";
 import LoadingState from "../schema/LoadingState";
-import { Dispatch, RootState } from "../store/store";
+import { RootState } from "../store/store";
 import AuthStack from "./AuthStack";
 import UserHomeStack from "./UserHomeStack";
 
@@ -14,24 +11,12 @@ interface NavigationStateProps {
     bootState: LoadingState;
 }
 
-interface NavigationDispatchProps {
-    start: () => void;
-}
-
-function Navigation(props: NavigationStateProps & NavigationDispatchProps) {
-    useEffect(() => {
-        props.start();
-    }, []);
-
+function Navigation(props: NavigationStateProps) {
     return (
         <>
-            {props.bootState === LoadingState.pending ? (
-                <LoadingOverlay message="Loading..." />
-            ) : (
-                <NavigationContainer>
-                    {props.isAuthenticated ? <UserHomeStack /> : <AuthStack />}
-                </NavigationContainer>
-            )}
+            <NavigationContainer>
+                {props.isAuthenticated ? <UserHomeStack /> : <AuthStack />}
+            </NavigationContainer>
         </>
     );
 }
@@ -45,12 +30,4 @@ function mapState(state: RootState): NavigationStateProps {
     };
 }
 
-function mapDispatch(dispatch: Dispatch): NavigationDispatchProps {
-    return {
-        start: () => {
-            startUp(dispatch);
-        },
-    };
-}
-
-export default connect(mapState, mapDispatch)(Navigation);
+export default connect(mapState)(Navigation);

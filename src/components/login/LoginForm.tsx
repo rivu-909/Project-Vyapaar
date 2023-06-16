@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { View, StyleSheet } from "react-native";
 import Button from "../common/Button";
 import { Dispatch } from "../../store/store";
 import login from "../../actions/auth/login";
@@ -37,15 +38,14 @@ function LogInForm(props: LogInFormDispatchProps) {
                 inputs.phoneNumber,
                 inputs.password
             );
-            console.log(response);
         } catch (err) {
             console.log(err);
         }
     };
 
     return (
-        <>
-            <Heading label="Already have an account?" />
+        <View style={styles.root}>
+            <Heading label="Log In" />
             <Input
                 label="Phone Number"
                 textInputConfig={{
@@ -63,10 +63,30 @@ function LogInForm(props: LogInFormDispatchProps) {
                     secureTextEntry: true,
                 }}
             />
-            <Button onPress={onLogin} label="Login" />
-        </>
+            <Button
+                onPress={onLogin}
+                label="Login"
+                containerStyle={styles.buttonContainerStyle}
+                labelStyle={styles.buttonLabelStyle}
+            />
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    root: {
+        margin: 8,
+        marginBottom: 0,
+        alignItems: "flex-start",
+    },
+    buttonContainerStyle: {
+        borderRadius: 8,
+        backgroundColor: "black",
+    },
+    buttonLabelStyle: {
+        color: "white",
+    },
+});
 
 function mapDispatch(dispatch: Dispatch): LogInFormDispatchProps {
     return {

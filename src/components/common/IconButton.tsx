@@ -2,7 +2,6 @@ import {
     GestureResponderEvent,
     Pressable,
     StyleSheet,
-    Text,
     View,
     StyleProp,
     ViewStyle,
@@ -11,13 +10,13 @@ import {
 
 interface ButtonProps {
     onPress: (evt: GestureResponderEvent) => void;
-    label: string;
     containerStyle?: StyleProp<ViewStyle>;
     labelStyle?: StyleProp<TextStyle>;
+    children: React.ReactNode;
     androidRippleColor?: string;
 }
 
-export default function Button(props: ButtonProps) {
+export default function IconButton(props: ButtonProps) {
     return (
         <View style={[styles.buttonOuterContainer, props.containerStyle]}>
             <Pressable
@@ -25,9 +24,7 @@ export default function Button(props: ButtonProps) {
                 android_ripple={{ color: props.androidRippleColor }}
             >
                 <View style={styles.buttonInnerContainer}>
-                    <Text style={[styles.buttonText, props.labelStyle]}>
-                        {props.label}
-                    </Text>
+                    {props.children}
                 </View>
             </Pressable>
         </View>
@@ -39,13 +36,11 @@ const styles = StyleSheet.create({
         margin: 4,
         overflow: "hidden", // to make the ripple effect outside the container to cut off
         elevation: 2,
+        alignItems: "center",
+        justifyContent: "center",
     },
     buttonInnerContainer: {
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-    },
-    buttonText: {
-        textAlign: "center",
-        fontFamily: "MerriweatherRegular",
+        justifyContent: "center",
+        alignItems: "center",
     },
 });

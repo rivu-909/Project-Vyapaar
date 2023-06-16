@@ -5,19 +5,22 @@ import getProductDetails from "../../actions/product/getProductDetails";
 import Button from "../../components/common/Button";
 import Heading from "../../components/common/Heading";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
-import TradeDailog from "../../components/product/TradeDailog";
+import ConfirmRequestDailog from "../../components/dailogs/ConfirmRequestDailog";
 import TradeList from "../../components/product/TradeList";
 import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
 import LoadingState from "../../schema/LoadingState";
 import Product from "../../schema/products/Product";
 import TradeType from "../../schema/products/TradeType";
-import { DetailsScreenRouteProp } from "../../schema/ReactNavigation";
-import { onShowTradeDailog } from "../../store/reducer/appConfig/appConfigSlice";
+import {
+    DetailsScreenNavigationProp,
+    DetailsScreenRouteProp,
+} from "../../schema/ReactNavigation";
 import { Dispatch, RootState } from "../../store/store";
 import getProductFromId from "../../utils/getProductFromId";
 
 interface ProductDetailsProps {
     route: DetailsScreenRouteProp;
+    navigation: DetailsScreenNavigationProp;
 }
 
 interface ProductDetailsStateProps {
@@ -28,7 +31,6 @@ interface ProductDetailsStateProps {
 
 interface ProductDetailsDispatchProps {
     fetchProduct: (token: string, productId: string) => void;
-    onBidAsk: (productId: string, tradeType: TradeType) => void;
 }
 
 function ProductDetails(
@@ -47,11 +49,19 @@ function ProductDetails(
     }, []);
 
     const BidHandler = React.useCallback(() => {
-        props.onBidAsk(productId, TradeType.Bid);
+        props.navigation.navigate("CreateTrade", {
+            productId,
+            tradeType: TradeType.Bid,
+            trade: null,
+        });
     }, [productId]);
 
     const AskHandler = React.useCallback(() => {
-        props.onBidAsk(productId, TradeType.Ask);
+        props.navigation.navigate("CreateTrade", {
+            productId,
+            tradeType: TradeType.Ask,
+            trade: null,
+        });
     }, [productId]);
 
     return !isTradesLoaded ? (
@@ -59,16 +69,35 @@ function ProductDetails(
     ) : (
         <>
             <View style={styles.screen}>
-                <Heading label={product.name} />
                 <View style={styles.productInfo}>
-                    <Text>{product.description}</Text>
-                    <Text>{product.price}</Text>
+                    <Heading
+                        label={product.description}
+                        labelStyle={styles.textStyles}
+                        containerStyle={styles.headingContainer}
+                    />
+                    <Heading
+                        label={`₹ ${product.price}`}
+                        labelStyle={styles.textStyles}
+                        containerStyle={styles.headingContainer}
+                    />
                 </View>
                 <TradeList trades={product.trades} productId={productId} />
-                <Button label="Bid" onPress={BidHandler} />
-                <Button label="Ask" onPress={AskHandler} />
+                <View style={styles.buttonsContainer}>
+                    <Button
+                        label="Bid"
+                        onPress={BidHandler}
+                        containerStyle={styles.buttonContainerStyle}
+                        labelStyle={styles.buttonLabelStyle}
+                    />
+                    <Button
+                        label="Ask"
+                        onPress={AskHandler}
+                        containerStyle={styles.buttonContainerStyle}
+                        labelStyle={styles.buttonLabelStyle}
+                    />
+                </View>
             </View>
-            <TradeDailog />
+            <ConfirmRequestDailog />
         </>
     );
 }
@@ -77,8 +106,32 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
     },
+    headingContainer: {
+        marginVertical: 0,
+        marginTop: 16,
+        paddingBottom: 8,
+    },
     productInfo: {
-        alignItems: "center",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        marginHorizontal: 28,
+        borderBottomWidth: 1,
+        marginBottom: 4,
+    },
+    textStyles: {
+        fontSize: 20,
+    },
+    buttonsContainer: {
+        flexDirection: "row",
+        margin: 8,
+    },
+    buttonContainerStyle: {
+        flex: 1,
+        borderRadius: 8,
+        backgroundColor: "black",
+    },
+    buttonLabelStyle: {
+        color: "white",
     },
 });
 
@@ -101,9 +154,6 @@ function mapDispatch(dispatch: Dispatch): ProductDetailsDispatchProps {
                     actionType: GetProductDetailsActionType.FetchProduct,
                 })
             );
-        },
-        onBidAsk: (productId: string, tradeType: TradeType) => {
-            dispatch(onShowTradeDailog({ productId, tradeType }));
         },
     };
 }

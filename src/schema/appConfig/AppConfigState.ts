@@ -1,7 +1,5 @@
-import IProductDailogConfig from "./IproductDailogConfig";
-import ITradeDailogConfig from "./ITradeDailogConfig";
+import IRequestConfirmDailogConfig from "./IRequestConfiirmDailogConfig";
 
 export default interface AppConfigState {
-    tradeDailog: ITradeDailogConfig;
-    productDailog: IProductDailogConfig;
+    requestConfiirmDailog: IRequestConfirmDailogConfig;
 }
