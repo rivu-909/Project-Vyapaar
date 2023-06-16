@@ -6,7 +6,6 @@ import Button from "../../components/common/Button";
 import Heading from "../../components/common/Heading";
 import LoadingOverlay from "../../components/common/LoadingOverlay";
 import ConfirmRequestDailog from "../../components/dailogs/ConfirmRequestDailog";
-import TradeDailog from "../../components/product/TradeDailog";
 import TradeList from "../../components/product/TradeList";
 import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
 import LoadingState from "../../schema/LoadingState";
@@ -16,7 +15,6 @@ import {
     DetailsScreenNavigationProp,
     DetailsScreenRouteProp,
 } from "../../schema/ReactNavigation";
-import { onShowTradeDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
 import getProductFromId from "../../utils/getProductFromId";
 
@@ -33,7 +31,6 @@ interface ProductDetailsStateProps {
 
 interface ProductDetailsDispatchProps {
     fetchProduct: (token: string, productId: string) => void;
-    onBidAsk: (productId: string, tradeType: TradeType) => void;
 }
 
 function ProductDetails(
@@ -157,9 +154,6 @@ function mapDispatch(dispatch: Dispatch): ProductDetailsDispatchProps {
                     actionType: GetProductDetailsActionType.FetchProduct,
                 })
             );
-        },
-        onBidAsk: (productId: string, tradeType: TradeType) => {
-            dispatch(onShowTradeDailog({ productId, tradeType }));
         },
     };
 }

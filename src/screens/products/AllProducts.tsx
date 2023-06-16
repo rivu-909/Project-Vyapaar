@@ -6,12 +6,9 @@ import Product from "../../schema/products/Product";
 import React from "react";
 import getProducts from "../../actions/product/getProducts";
 import ProductList from "../../components/product/ProductList";
-import ProductDailog from "../../components/product/ProductDailog";
 import LoadingState from "../../schema/LoadingState";
 import logoutHandler from "../../actions/auth/logoutHandler";
-import { onShowProductDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import IconButton from "../../components/common/IconButton";
-import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CreateProductScreenNavigationProp } from "../../schema/ReactNavigation";
 import { useNavigation } from "@react-navigation/native";
@@ -25,16 +22,11 @@ interface AllProductsStateProps {
 interface AllProductsDispatchProps {
     fetchProducts: (token: string) => void;
     logout: () => void;
-    createProductHandler: () => void;
 }
 
 function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
     React.useEffect(() => {
         props.fetchProducts(props.token);
-    }, []);
-
-    const onCreateProductClick = React.useCallback(() => {
-        props.createProductHandler();
     }, []);
 
     const navigation = useNavigation<CreateProductScreenNavigationProp>();
@@ -66,7 +58,6 @@ function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
                 )}
                 {/* <Button label="Log out" onPress={props.logout} /> */}
             </View>
-            <ProductDailog />
         </>
     );
 }
@@ -105,9 +96,6 @@ function mapDispatch(dispatch: Dispatch): AllProductsDispatchProps {
         },
         logout: () => {
             logoutHandler(dispatch);
-        },
-        createProductHandler: () => {
-            dispatch(onShowProductDailog());
         },
     };
 }

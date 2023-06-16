@@ -1,30 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import AppConfigState from "../../../schema/appConfig/AppConfigState";
-import ITrade from "../../../schema/products/ITrade";
-import TradeType from "../../../schema/products/TradeType";
-
-interface TradeDetails {
-    productId: string;
-    tradeType: TradeType;
-    trade?: ITrade;
-}
 
 interface RequestDetails {
     productId: string;
     tradeId: string;
     userId: string;
 }
-
-const initialTradeDailogState = {
-    visible: false,
-    productId: "",
-    tradeType: TradeType.Ask,
-    trade: null,
-};
-
-const initialProductDailogState = {
-    visible: false,
-};
 
 const initialRequestConfirmDailogState = {
     visible: false,
@@ -34,8 +15,6 @@ const initialRequestConfirmDailogState = {
 };
 
 const initialState: AppConfigState = {
-    tradeDailog: initialTradeDailogState,
-    productDailog: initialProductDailogState,
     requestConfiirmDailog: initialRequestConfirmDailogState,
 };
 
@@ -43,30 +22,6 @@ const appConfigSlice = createSlice({
     name: "user",
     initialState,
     reducers: {
-        // TRADE DAILOG
-        onShowTradeDailog: (
-            state: AppConfigState,
-            action: PayloadAction<TradeDetails>
-        ) => {
-            if (action.payload) {
-                state.tradeDailog.productId = action.payload.productId;
-                state.tradeDailog.tradeType = action.payload.tradeType;
-                state.tradeDailog.trade = action.payload.trade ?? null;
-            }
-            state.tradeDailog.visible = true;
-        },
-        onTradeDailogClose: (state: AppConfigState) => {
-            state.tradeDailog = initialTradeDailogState;
-        },
-
-        // PRODUCT DAILOG
-        onShowProductDailog: (state: AppConfigState) => {
-            state.productDailog.visible = true;
-        },
-        onCloseProductDailog: (state: AppConfigState) => {
-            state.productDailog.visible = false;
-        },
-
         // REQUEST CONFIRM DAILOG
         onShowRequestConfirmDailog: (
             state: AppConfigState,
@@ -86,12 +41,6 @@ const appConfigSlice = createSlice({
     },
 });
 
-export const {
-    onTradeDailogClose,
-    onShowTradeDailog,
-    onShowProductDailog,
-    onCloseProductDailog,
-    onShowRequestConfirmDailog,
-    onCloseRequestConfirmDailog,
-} = appConfigSlice.actions;
+export const { onShowRequestConfirmDailog, onCloseRequestConfirmDailog } =
+    appConfigSlice.actions;
 export default appConfigSlice.reducer;
