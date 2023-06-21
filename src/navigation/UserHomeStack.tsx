@@ -8,6 +8,7 @@ import ProductDetails from "../screens/products/ProductDetails";
 import Home from "./Home";
 import CreateProduct from "../screens/products/CreateProduct";
 import CreateTrade from "../screens/products/CreateTrade";
+import NewsDetails from "../screens/news/NewsDetails";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -54,6 +55,7 @@ export default function UserHomeStack() {
                     headerShown: false,
                 }}
             />
+            <Stack.Screen name="NewsDetails" component={NewsDetails} />
         </Stack.Navigator>
     );
 }

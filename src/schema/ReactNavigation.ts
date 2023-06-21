@@ -20,6 +20,9 @@ export type RootStackParamList = {
         productId: string;
         name: string;
     };
+    NewsDetails: {
+        uri: string;
+    };
 };
 
 export type LoginScreenNavigationProp = NativeStackNavigationProp<
@@ -52,9 +55,19 @@ export type CreateTradeScreenNavigationProp = NativeStackNavigationProp<
     "CreateTrade"
 >;
 
+export type NewsDetailsScreenNavigationProp = NativeStackNavigationProp<
+    RootStackParamList,
+    "NewsDetails"
+>;
+
 export type DetailsScreenRouteProp = RouteProp<RootStackParamList, "Details">;
 
 export type CreateTradeScreenRouteProp = RouteProp<
     RootStackParamList,
     "CreateTrade"
+>;
+
+export type NewsDetailsScreenRouteProp = RouteProp<
+    RootStackParamList,
+    "NewsDetails"
 >;

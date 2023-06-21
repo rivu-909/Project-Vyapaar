@@ -1,16 +1,9 @@
 import { Text, View, StyleSheet } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import AllProducts from "../screens/products/AllProducts";
+import News from "../screens/news/News";
 
 const Tab = createMaterialTopTabNavigator();
-
-function Favourites() {
-    return (
-        <View>
-            <Text>Favourites products goes here</Text>
-        </View>
-    );
-}
 
 export default function Home() {
     return (
@@ -21,7 +14,7 @@ export default function Home() {
             sceneContainerStyle={{ backgroundColor: "white" }}
         >
             <Tab.Screen name="All" component={AllProducts} />
-            <Tab.Screen name="Favourites" component={Favourites} />
+            <Tab.Screen name="News" component={News} />
         </Tab.Navigator>
     );
 }
