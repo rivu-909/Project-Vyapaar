@@ -26,7 +26,9 @@ interface AllProductsDispatchProps {
 
 function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
     React.useEffect(() => {
-        props.fetchProducts(props.token);
+        if (props.productLoadingState !== LoadingState.success) {
+            props.fetchProducts(props.token);
+        }
     }, []);
 
     const navigation = useNavigation<CreateProductScreenNavigationProp>();

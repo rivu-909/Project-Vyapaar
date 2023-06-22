@@ -1,17 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import IToken from "../../schema/servicesSchema/IToken";
-import fetchProductsServiceCall from "../../services/products/fetchProductsServiceCall";
+import fetchNewsServiceCall from "../../services/news/fetchNewsServiceCall";
 
-const getProducts = createAsyncThunk(
-    "products/all",
+const getNews = createAsyncThunk(
+    "news",
     async (params: IToken, { rejectWithValue }) => {
         try {
-            const products = await fetchProductsServiceCall(params);
-            return products;
+            const userData = await fetchNewsServiceCall(params);
+            return userData;
         } catch (err) {
             return rejectWithValue((err as Error).message);
         }
     }
 );
 
-export default getProducts;
+export default getNews;
