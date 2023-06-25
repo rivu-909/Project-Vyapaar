@@ -7,6 +7,11 @@ interface RequestDetails {
     userId: string;
 }
 
+interface ConnectionDetails {
+    userName: string;
+    phoneNumber: string;
+}
+
 const initialRequestConfirmDailogState = {
     visible: false,
     productId: null,
@@ -14,8 +19,15 @@ const initialRequestConfirmDailogState = {
     userId: null,
 };
 
+const initialIConnectionDailogState = {
+    visible: false,
+    userName: null,
+    phoneNumber: null,
+};
+
 const initialState: AppConfigState = {
     requestConfiirmDailog: initialRequestConfirmDailogState,
+    connectionDailog: initialIConnectionDailogState,
 };
 
 const appConfigSlice = createSlice({
@@ -23,6 +35,7 @@ const appConfigSlice = createSlice({
     initialState,
     reducers: {
         // REQUEST CONFIRM DAILOG
+
         onShowRequestConfirmDailog: (
             state: AppConfigState,
             action: PayloadAction<RequestDetails>
@@ -38,9 +51,29 @@ const appConfigSlice = createSlice({
             state.requestConfiirmDailog.tradeId = null;
             state.requestConfiirmDailog.userId = null;
         },
+
+        // CONNECTION DAILOG
+
+        onShowConnectionDailog: (
+            state: AppConfigState,
+            action: PayloadAction<ConnectionDetails>
+        ) => {
+            state.connectionDailog.visible = true;
+            state.connectionDailog.userName = action.payload.userName;
+            state.connectionDailog.phoneNumber = action.payload.phoneNumber;
+        },
+
+        onCloseConnectionDailog: (state: AppConfigState) => {
+            state.connectionDailog.visible = false;
+        },
     },
 });
 
-export const { onShowRequestConfirmDailog, onCloseRequestConfirmDailog } =
-    appConfigSlice.actions;
+export const {
+    onShowRequestConfirmDailog,
+    onCloseRequestConfirmDailog,
+    onShowConnectionDailog,
+    onCloseConnectionDailog,
+} = appConfigSlice.actions;
+
 export default appConfigSlice.reducer;

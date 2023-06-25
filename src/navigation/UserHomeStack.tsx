@@ -55,7 +55,13 @@ export default function UserHomeStack() {
                     headerShown: false,
                 }}
             />
-            <Stack.Screen name="NewsDetails" component={NewsDetails} />
+            <Stack.Screen
+                name="NewsDetails"
+                component={NewsDetails}
+                options={{
+                    title: "Article",
+                }}
+            />
         </Stack.Navigator>
     );
 }
