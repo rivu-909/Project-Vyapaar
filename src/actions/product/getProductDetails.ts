@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { AxiosError } from "axios";
 import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
 import ICreateProductRequest from "../../schema/servicesSchema/ICreateProductRequest";
 import ICreateTradeRequest from "../../schema/servicesSchema/ICreateTradeRequest";
@@ -8,6 +9,7 @@ import createProductServiceCall from "../../services/products/createProductServi
 import fetchProductDetailsServiceCall from "../../services/products/fetchProductDetailsServiceCall";
 import createTradeServiceCall from "../../services/trade/createTradeServiceCall";
 import updateTradeServiceCall from "../../services/trade/updateTradeServiceCall";
+import createError from "../../utils/createError";
 
 type ParamsType = (
     | IFetchProductDetailsRequest
@@ -53,7 +55,7 @@ const getProductDetails = createAsyncThunk(
             }
             return product;
         } catch (err) {
-            return rejectWithValue((err as Error).message);
+            return rejectWithValue(createError(err as AxiosError));
         }
     }
 );

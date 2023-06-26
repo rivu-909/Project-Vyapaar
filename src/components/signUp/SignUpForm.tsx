@@ -2,10 +2,22 @@ import React from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import Button from "../common/Button";
-import { Dispatch } from "../../store/store";
+import { Dispatch, RootState } from "../../store/store";
 import signUp from "../../actions/auth/signUp";
 import Heading from "../common/Heading";
 import Input from "../common/Input";
+import validatePasswordCriteria from "../../utils/validatePasswordCriteria";
+import validateGstinCriteria from "../../utils/validateGstinCriteria";
+import LoadingState from "../../schema/LoadingState";
+import LoadingOverlay from "../common/LoadingOverlay";
+
+interface SignUpFormProps {
+    goToLoginPage: () => void;
+}
+
+interface SignUpFormStateProps {
+    signUpState: LoadingState;
+}
 
 interface SignUpFormDispatchProps {
     signUpHandler: (
@@ -13,104 +25,188 @@ interface SignUpFormDispatchProps {
         phoneNumber: string,
         password: string,
         gstin: string
-    ) => void;
+    ) => Promise<any>;
 }
 
-function SignUpForm(props: SignUpFormDispatchProps) {
+interface IInput {
+    value: string;
+    isValid: boolean;
+}
+
+function SignUpForm(
+    props: SignUpFormProps & SignUpFormStateProps & SignUpFormDispatchProps
+) {
     const [inputs, setInputs] = React.useState<{
-        name: string;
-        phoneNumber: string;
-        password: string;
-        confirmPassword: string;
-        gstin: string;
+        name: IInput;
+        phoneNumber: IInput;
+        password: IInput;
+        confirmPassword: IInput;
+        gstin: IInput;
     }>({
-        name: "",
-        phoneNumber: "",
-        password: "",
-        confirmPassword: "",
-        gstin: "",
+        name: { value: "", isValid: true },
+        phoneNumber: { value: "", isValid: true },
+        password: { value: "", isValid: true },
+        confirmPassword: { value: "", isValid: true },
+        gstin: { value: "", isValid: true },
     });
 
     const inputChangeHandler = (
         inputIdentifier: string,
         enteredValue: string
     ) => {
-        setInputs((currentInputs) => {
-            return {
-                ...currentInputs,
-                [inputIdentifier]: enteredValue,
-            };
-        });
+        setInputs((currentInputs) => ({
+            ...currentInputs,
+            [inputIdentifier]: { value: enteredValue, isValid: true },
+        }));
     };
 
     const onSignUp = () => {
-        try {
-            const response = props.signUpHandler(
-                inputs.name,
-                inputs.phoneNumber,
-                inputs.password,
-                inputs.gstin
-            );
-        } catch (err) {
-            console.log(err);
+        if (inputs.name.value.length === 0) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                name: { value: "", isValid: false },
+            }));
+            return;
         }
+
+        const regExpPhone = /^\d{10}$/;
+        if (!regExpPhone.test(inputs.phoneNumber.value)) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                phoneNumber: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        if (!validatePasswordCriteria(inputs.password.value)) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                password: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        if (inputs.password.value !== inputs.confirmPassword.value) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                confirmPassword: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        if (!validateGstinCriteria(inputs.gstin.value)) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                gstin: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        props
+            .signUpHandler(
+                inputs.name.value,
+                inputs.phoneNumber.value,
+                inputs.password.value,
+                inputs.gstin.value
+            )
+            .then(({ payload }) => {
+                setInputs((currentInputs) => ({
+                    ...currentInputs,
+                    [payload.validationPath]: { value: "", isValid: false },
+                }));
+            });
     };
 
     return (
-        <View style={styles.root}>
-            <Heading label="Sign Up" />
-            <Input
-                label="Name"
-                textInputConfig={{
-                    onChangeText: inputChangeHandler.bind(null, "name"),
-                    value: inputs.name,
-                    placeholder: "John",
-                }}
-            />
-            <Input
-                label="Phone Number"
-                textInputConfig={{
-                    onChangeText: inputChangeHandler.bind(null, "phoneNumber"),
-                    value: inputs.phoneNumber,
-                    placeholder: "9876543210",
-                }}
-            />
-            <Input
-                label="Password"
-                textInputConfig={{
-                    onChangeText: inputChangeHandler.bind(null, "password"),
-                    value: inputs.password,
-                    placeholder: "your password",
-                    secureTextEntry: true,
-                }}
-            />
-            <Input
-                label="Confirm Password"
-                textInputConfig={{
-                    onChangeText: inputChangeHandler.bind(
-                        null,
-                        "confirmPassword"
-                    ),
-                    value: inputs.confirmPassword,
-                    placeholder: "confirm your password",
-                    secureTextEntry: true,
-                }}
-            />
-            <Input
-                label="GSTIN"
-                textInputConfig={{
-                    onChangeText: inputChangeHandler.bind(null, "gstin"),
-                    value: inputs.gstin,
-                    placeholder: "Your GSTIN",
-                }}
-            />
-            <Button
-                onPress={onSignUp}
-                label="SignUp"
-                containerStyle={styles.buttonContainerStyle}
-                labelStyle={styles.buttonLabelStyle}
-            />
-        </View>
+        <>
+            {props.signUpState === LoadingState.pending ? (
+                <LoadingOverlay message="Creating your account..." />
+            ) : (
+                <View style={styles.root}>
+                    <Heading label="Sign Up" />
+                    <Input
+                        label="Name"
+                        textInputConfig={{
+                            onChangeText: inputChangeHandler.bind(null, "name"),
+                            value: inputs.name.value,
+                            placeholder: "Type your name",
+                        }}
+                        invalid={!inputs.name.isValid}
+                    />
+                    <Input
+                        label="Phone Number"
+                        textInputConfig={{
+                            onChangeText: inputChangeHandler.bind(
+                                null,
+                                "phoneNumber"
+                            ),
+                            value: inputs.phoneNumber.value,
+                            placeholder: "Your 10 digit phone number",
+                        }}
+                        invalid={!inputs.phoneNumber.isValid}
+                    />
+                    <Input
+                        label="Password"
+                        textInputConfig={{
+                            onChangeText: inputChangeHandler.bind(
+                                null,
+                                "password"
+                            ),
+                            value: inputs.password.value,
+                            placeholder: "Create a password",
+                            secureTextEntry: true,
+                        }}
+                        invalid={!inputs.password.isValid}
+                    />
+                    <Heading
+                        label="It should have atleast 6 digits, 1 capital letter, 1 small letter, 1 number, 1 special character"
+                        labelStyle={styles.promptLabelStyle}
+                        containerStyle={styles.promptContainerStyle}
+                    />
+                    <Input
+                        label="Confirm Password"
+                        textInputConfig={{
+                            onChangeText: inputChangeHandler.bind(
+                                null,
+                                "confirmPassword"
+                            ),
+                            value: inputs.confirmPassword.value,
+                            placeholder: "confirm your password",
+                            secureTextEntry: true,
+                        }}
+                        invalid={!inputs.confirmPassword.isValid}
+                    />
+                    <Input
+                        label="GSTIN"
+                        textInputConfig={{
+                            onChangeText: inputChangeHandler.bind(
+                                null,
+                                "gstin"
+                            ),
+                            value: inputs.gstin.value,
+                            placeholder: "Your GSTIN",
+                        }}
+                        invalid={!inputs.gstin.isValid}
+                    />
+                    <Heading
+                        label="Please provide the authentic GSTIN as per terms and conditions"
+                        labelStyle={styles.promptLabelStyle}
+                        containerStyle={styles.promptContainerStyle}
+                    />
+                    <Button
+                        onPress={onSignUp}
+                        label="SignUp"
+                        containerStyle={styles.buttonContainerStyle}
+                        labelStyle={styles.buttonLabelStyle}
+                    />
+                    <Button
+                        onPress={props.goToLoginPage}
+                        label="Use an existing account"
+                        containerStyle={styles.loginButtonContainer}
+                    />
+                </View>
+            )}
+        </>
     );
 }
 
@@ -127,7 +223,25 @@ const styles = StyleSheet.create({
     buttonLabelStyle: {
         color: "white",
     },
+    promptLabelStyle: {
+        color: "#c5c5c5",
+        fontSize: 12,
+    },
+    loginButtonContainer: {
+        borderRadius: 8,
+        backgroundColor: "#D3D3D3",
+    },
+    promptContainerStyle: {
+        marginVertical: 8,
+        marginRight: 80,
+    },
 });
+
+function mapState(state: RootState): SignUpFormStateProps {
+    return {
+        signUpState: state.user.signUpState,
+    };
+}
 
 function mapDispatch(dispatch: Dispatch): SignUpFormDispatchProps {
     return {
@@ -136,10 +250,10 @@ function mapDispatch(dispatch: Dispatch): SignUpFormDispatchProps {
             phoneNumber: string,
             password: string,
             gstin: string
-        ) => {
-            dispatch(signUp({ name, phoneNumber, password, gstin }));
+        ): Promise<any> => {
+            return dispatch(signUp({ name, phoneNumber, password, gstin }));
         },
     };
 }
 
-export default connect(null, mapDispatch)(SignUpForm);
+export default connect(mapState, mapDispatch)(SignUpForm);

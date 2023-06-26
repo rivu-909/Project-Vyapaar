@@ -23,7 +23,12 @@ interface CreateProductDispatchProps {
         name: string,
         description: string,
         price: string
-    ) => void;
+    ) => Promise<any>;
+}
+
+interface IInput {
+    value: string;
+    isValid: boolean;
 }
 
 function CreateProduct(
@@ -32,10 +37,10 @@ function CreateProduct(
         CreateProductDispatchProps
 ) {
     const [inputs, setInputs] = React.useState<{
-        name: string;
-        price: string;
-        description: string;
-    }>(getInputs());
+        name: IInput;
+        price: IInput;
+        description: IInput;
+    }>(getDefaultInputs());
 
     const inputChangeHandler = (
         inputIdentifier: string,
@@ -44,25 +49,63 @@ function CreateProduct(
         setInputs((currentInputs) => {
             return {
                 ...currentInputs,
-                [inputIdentifier]: enteredValue,
+                [inputIdentifier]: { value: enteredValue, isValid: true },
             };
         });
     };
 
-    const onClose = () => {
+    const onClose = React.useCallback(() => {
         props.navigation.goBack();
-    };
+    }, []);
 
-    const onSubmit = () => {
-        props.onChangeProducts(
-            props.token,
-            inputs.name,
-            inputs.description,
-            inputs.price
-        );
-        setInputs(getInputs());
-        onClose();
-    };
+    const onSubmit = React.useCallback(() => {
+        if (inputs.name.value.length === 0) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                name: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        const priceRegExp = /^\d+(\.\d{1,2})?$/;
+        if (
+            inputs.price.value.length === 0 ||
+            !priceRegExp.test(inputs.price.value)
+        ) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                price: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        if (inputs.description.value.length === 0) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                description: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        props
+            .onChangeProducts(
+                props.token,
+                inputs.name.value,
+                inputs.description.value,
+                inputs.price.value
+            )
+            .then(({ payload }) => {
+                if (!payload.validationError) {
+                    setInputs(getDefaultInputs());
+                    onClose();
+                } else {
+                    setInputs((currentInputs) => ({
+                        ...currentInputs,
+                        [payload.validationPath]: { value: "", isValid: false },
+                    }));
+                }
+            });
+    }, [inputs, props.token]);
 
     return (
         <ScrollView
@@ -74,25 +117,28 @@ function CreateProduct(
                 label="Name"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "name"),
-                    value: inputs.name,
+                    value: inputs.name.value,
                     placeholder: "Jack Daniel",
                 }}
+                invalid={!inputs.name.isValid}
             />
             <Input
                 label="Price"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "price"),
-                    value: inputs.price,
+                    value: inputs.price.value,
                     placeholder: "2990 (Market price)",
                 }}
+                invalid={!inputs.price.isValid}
             />
             <Input
                 label="Description"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "description"),
-                    value: inputs.description,
+                    value: inputs.description.value,
                     placeholder: "Premium imported whiskey",
                 }}
+                invalid={!inputs.description.isValid}
             />
             <View style={styles.buttonsContainer}>
                 <Button
@@ -145,11 +191,11 @@ const styles = StyleSheet.create({
     },
 });
 
-function getInputs() {
+function getDefaultInputs() {
     return {
-        name: "",
-        price: "",
-        description: "",
+        name: { value: "", isValid: true },
+        price: { value: "", isValid: true },
+        description: { value: "", isValid: true },
     };
 }
 
@@ -166,8 +212,8 @@ function mapDispatch(dispatch: Dispatch): CreateProductDispatchProps {
             name: string,
             description: string,
             price: string
-        ) => {
-            dispatch(
+        ): Promise<any> => {
+            return dispatch(
                 getProductDetails({
                     actionType: GetProductDetailsActionType.CreateProduct,
                     token,

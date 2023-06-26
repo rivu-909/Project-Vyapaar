@@ -3,6 +3,8 @@ import ILoginRequest from "../../schema/servicesSchema/ILoginRequest";
 import loginServiceCall from "../../services/auth/loginServiceCall";
 import cacheUserToken from "../../utils/cacheUserToken";
 import cacheUserData from "../../utils/cacheUserData";
+import { AxiosError } from "axios";
+import createError from "../../utils/createError";
 
 const login = createAsyncThunk(
     "user/login",
@@ -13,7 +15,7 @@ const login = createAsyncThunk(
             cacheUserData(userData);
             return userData;
         } catch (err) {
-            return rejectWithValue((err as Error).message);
+            return rejectWithValue(createError(err as AxiosError));
         }
     }
 );

@@ -1,8 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { AxiosError } from "axios";
 import ISignUpRequest from "../../schema/servicesSchema/ISignUpRequest";
 import signUpServiceCall from "../../services/auth/signUpServiceCall";
 import cacheUserData from "../../utils/cacheUserData";
 import cacheUserToken from "../../utils/cacheUserToken";
+import createError from "../../utils/createError";
 
 const signUp = createAsyncThunk(
     "user/signUp",
@@ -13,7 +15,7 @@ const signUp = createAsyncThunk(
             cacheUserData(userData);
             return userData;
         } catch (err) {
-            return rejectWithValue((err as Error).message);
+            return rejectWithValue(createError(err as AxiosError));
         }
     }
 );

@@ -30,8 +30,8 @@ function TradeCard(
     const { price, address, type } = props.trade;
 
     const requestHandler = React.useCallback(() => {
-        props.onRequest(props.userId, props.productId, props.trade._id);
-    }, [props.userId, props.productId, props.trade._id]);
+        props.onRequest(props.trade.userId, props.productId, props.trade._id);
+    }, [props.trade.userId, props.productId, props.trade._id]);
 
     const navigation = useNavigation<CreateTradeScreenNavigationProp>();
     const editTradeHandler = React.useCallback(() => {
@@ -57,20 +57,22 @@ function TradeCard(
                 />
             </View>
             <View style={styles.buttonsContainer}>
-                <Button
-                    label="Request"
-                    onPress={requestHandler}
-                    containerStyle={styles.buttonContainerStyle}
-                    labelStyle={styles.buttonLabelStyle}
-                />
-                {props.userId === props.trade.userId ? (
+                {props.userId !== props.trade.userId && (
+                    <Button
+                        label="Request"
+                        onPress={requestHandler}
+                        containerStyle={styles.buttonContainerStyle}
+                        labelStyle={styles.buttonLabelStyle}
+                    />
+                )}
+                {props.userId === props.trade.userId && (
                     <IconButton
                         onPress={editTradeHandler}
                         containerStyle={styles.iconButtonStyle}
                     >
                         <MaterialIcons name="edit" size={20} color="white" />
                     </IconButton>
-                ) : null}
+                )}
             </View>
         </View>
     );

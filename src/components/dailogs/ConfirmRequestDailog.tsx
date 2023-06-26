@@ -1,6 +1,8 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
+import sendTradeRequests from "../../actions/requests/sendTradeRequest";
+import ITradeRequest from "../../schema/user/ITradeRequest";
 import { onCloseRequestConfirmDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
 import Button from "../common/Button";
@@ -9,26 +11,39 @@ import Heading from "../common/Heading";
 
 interface ConfirmRequestDailogStateProps {
     visible: boolean;
-    userId: string;
+    receiverId: string;
     productId: string;
     tradeId: string;
+    token: string;
+    sentTradeRequests: Array<ITradeRequest>;
 }
 
 interface ConfirmRequestDailogDispatchProps {
     onCancelRequest: () => void;
+    onConfirmRequest: (
+        receiverId: string,
+        productId: string,
+        tradeId: string,
+        token: string
+    ) => void;
 }
 
 function ConfirmRequestDailog(
     props: ConfirmRequestDailogStateProps & ConfirmRequestDailogDispatchProps
 ) {
     const onConfirm = React.useCallback(() => {
-        console.log({
-            userId: props.userId,
-            productId: props.productId,
-            tradeId: props.tradeId,
-        });
+        if (props.sentTradeRequests.find((r) => r.tradeId === props.tradeId)) {
+            props.onCancelRequest();
+            return;
+        }
+        props.onConfirmRequest(
+            props.receiverId,
+            props.productId,
+            props.tradeId,
+            props.token
+        );
         props.onCancelRequest();
-    }, [props.productId, props.productId, props.tradeId]);
+    }, [props.receiverId, props.productId, props.tradeId, props.token]);
 
     return (
         <DailogBox onClose={props.onCancelRequest} visible={props.visible}>
@@ -91,11 +106,14 @@ const styles = StyleSheet.create({
 
 function mapState(state: RootState): ConfirmRequestDailogStateProps {
     const reqConfirmDailogState = state.appConfig.requestConfiirmDailog;
+    const user = state.user;
     return {
         visible: reqConfirmDailogState.visible,
-        userId: reqConfirmDailogState.userId ?? "",
+        receiverId: reqConfirmDailogState.userId ?? "",
         productId: reqConfirmDailogState.productId ?? "",
         tradeId: reqConfirmDailogState.tradeId ?? "",
+        token: user.token ?? "",
+        sentTradeRequests: user.requests?.sent ?? [],
     };
 }
 
@@ -103,6 +121,16 @@ function mapDispatch(dispatch: Dispatch): ConfirmRequestDailogDispatchProps {
     return {
         onCancelRequest: () => {
             dispatch(onCloseRequestConfirmDailog());
+        },
+        onConfirmRequest: (
+            receiverId: string,
+            productId: string,
+            tradeId: string,
+            token: string
+        ) => {
+            dispatch(
+                sendTradeRequests({ receiverId, productId, tradeId, token })
+            );
         },
     };
 }

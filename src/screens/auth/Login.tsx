@@ -1,22 +1,13 @@
 import React from "react";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
-import { connect } from "react-redux";
-import { RootState } from "../../store/store";
-import LoadingOverlay from "../../components/common/LoadingOverlay";
+import { StyleSheet, ScrollView } from "react-native";
 import LoginForm from "../../components/login/LoginForm";
 import { LoginScreenNavigationProp } from "../../schema/ReactNavigation";
-import LoadingState from "../../schema/LoadingState";
-import Button from "../../components/common/Button";
 
 interface LoginProps {
     navigation: LoginScreenNavigationProp;
 }
 
-interface LoginStateProps {
-    loginState: LoadingState;
-}
-
-function Login(props: LoginProps & LoginStateProps) {
+export default function Login(props: LoginProps) {
     const goToSignUpPage = () => {
         props.navigation.navigate("SignUp");
     };
@@ -26,27 +17,9 @@ function Login(props: LoginProps & LoginStateProps) {
             style={styles.root}
             contentContainerStyle={styles.contentStyle}
         >
-            {props.loginState === LoadingState.pending ? (
-                <LoadingOverlay message="Logging you in..." />
-            ) : (
-                <>
-                    <LoginForm />
-                    <Button
-                        onPress={goToSignUpPage}
-                        label="Create an account"
-                        containerStyle={styles.buttonContainerStyle}
-                    />
-                </>
-            )}
+            <LoginForm goToSignUpPage={goToSignUpPage} />
         </ScrollView>
     );
-}
-
-function mapState(state: RootState): LoginStateProps {
-    const user = state.user;
-    return {
-        loginState: user.loginState,
-    };
 }
 
 const styles = StyleSheet.create({
@@ -62,8 +35,5 @@ const styles = StyleSheet.create({
     buttonContainerStyle: {
         marginLeft: 12,
         borderRadius: 8,
-        backgroundColor: "#D3D3D3",
     },
 });
-
-export default connect(mapState)(Login);

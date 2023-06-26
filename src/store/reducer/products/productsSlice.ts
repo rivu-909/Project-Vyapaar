@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import getProductDetails from "../../../actions/product/getProductDetails";
 import getProducts from "../../../actions/product/getProducts";
+import IError from "../../../schema/IError";
 import LoadingState from "../../../schema/LoadingState";
 import Product from "../../../schema/products/Product";
 import ProductState from "../../../schema/products/ProductState";
@@ -64,9 +65,12 @@ const productsSlice = createSlice({
                     }
                 }
             )
-            .addCase(getProductDetails.rejected.type, (state: ProductState) => {
-                state.productDetailsLoadingState = LoadingState.failed;
-            });
+            .addCase(
+                getProductDetails.rejected.type,
+                (state: ProductState, action: PayloadAction<IError>) => {
+                    state.productDetailsLoadingState = LoadingState.failed;
+                }
+            );
     },
 });
 
