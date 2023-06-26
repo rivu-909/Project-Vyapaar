@@ -7,10 +7,7 @@ const setFonts = async () => {
             MerriweatherLightItalic: require("../../../assets/fonts/Merriweather-LightItalic.ttf"),
             MerriweatherLight: require("../../../assets/fonts/Merriweather-Light.ttf"),
         });
-        console.log("font loaded");
-    } catch (err) {
-        console.log(err);
-    }
+    } catch (err) {}
 };
 
 export default setFonts;

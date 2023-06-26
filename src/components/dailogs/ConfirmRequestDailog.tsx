@@ -36,11 +36,6 @@ function ConfirmRequestDailog(
             props.onCancelRequest();
             return;
         }
-        // console.log({
-        //     userId: props.userId,
-        //     productId: props.productId,
-        //     tradeId: props.tradeId,
-        // });
         props.onConfirmRequest(
             props.receiverId,
             props.productId,

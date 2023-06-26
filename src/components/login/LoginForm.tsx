@@ -70,7 +70,6 @@ function LogInForm(
         props
             .loginHandler(inputs.phoneNumber.value, inputs.password.value)
             .then(({ payload }) => {
-                console.log(payload);
                 if (payload.validationError) {
                     setInputs((currentInputs) => ({
                         ...currentInputs,
