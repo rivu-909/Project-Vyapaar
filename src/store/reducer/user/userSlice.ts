@@ -11,6 +11,7 @@ import ITradeRequest from "../../../schema/user/ITradeRequest";
 import respondToRequest from "../../../actions/requests/respondToRequest";
 import fetchConnection from "../../../actions/requests/fetchConnection";
 import IConnection from "../../../schema/user/IConnection";
+import IError from "../../../schema/IError";
 
 const initialState: UserState = {
     token: null,
@@ -73,9 +74,12 @@ const userSlice = createSlice({
                 state.loginState = LoadingState.pending;
             })
             .addCase(login.fulfilled.type, addUser)
-            .addCase(login.rejected.type, (state: UserState) => {
-                state.loginState = LoadingState.failed;
-            })
+            .addCase(
+                login.rejected.type,
+                (state: UserState, action: PayloadAction<IError>) => {
+                    state.loginState = LoadingState.failed;
+                }
+            )
 
             // SIGNUP
 
@@ -83,9 +87,12 @@ const userSlice = createSlice({
                 state.signUpState = LoadingState.pending;
             })
             .addCase(signUp.fulfilled.type, addUser)
-            .addCase(signUp.rejected.type, (state: UserState) => {
-                state.signUpState = LoadingState.failed;
-            })
+            .addCase(
+                signUp.rejected.type,
+                (state: UserState, action: PayloadAction<IError>) => {
+                    state.signUpState = LoadingState.failed;
+                }
+            )
 
             // TRADE REQUESTS
 

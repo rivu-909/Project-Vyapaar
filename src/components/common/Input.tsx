@@ -21,7 +21,7 @@ export default function Input(props: InputProps) {
             </Text>
             <TextInput
                 style={[styles.input, !!props.invalid && styles.errorInput]}
-                placeholderTextColor="grey"
+                placeholderTextColor={!!props.invalid ? "#ec9a9a" : "grey"}
                 {...props.textInputConfig}
             />
         </View>
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
         color: "red",
     },
     errorInput: {
-        borderColor: "red",
+        color: "red",
+        borderBottomColor: "red",
     },
 });

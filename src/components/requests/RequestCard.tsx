@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import fetchConnection from "../../actions/requests/fetchConnection";
 import respondToRequest from "../../actions/requests/respondToRequest";
+import LoadingState from "../../schema/LoadingState";
 import Product from "../../schema/products/Product";
 import IConnection from "../../schema/user/IConnection";
 import ITradeRequest from "../../schema/user/ITradeRequest";
@@ -21,6 +22,7 @@ interface RequestCardStateProps {
     products: Array<Product>;
     token: string;
     connections: Array<IConnection>;
+    connectionFetchingStatus: LoadingState;
 }
 
 interface RequestCardDispatchProps {
@@ -63,7 +65,9 @@ function RequestCard(
             (r) => r.tradeRequestId === props.request._id
         );
         if (index === -1) {
-            props.getConnection(props.token, props.request._id);
+            if (props.connectionFetchingStatus !== LoadingState.pending) {
+                props.getConnection(props.token, props.request._id);
+            }
             index = props.connections.length;
             return;
         }
@@ -162,6 +166,7 @@ function mapState(state: RootState): RequestCardStateProps {
         products: state.products.products,
         token: user.token ?? "",
         connections: user.connections,
+        connectionFetchingStatus: user.connectionState,
     };
 }
 function mapDispatch(dispatch: Dispatch): RequestCardDispatchProps {

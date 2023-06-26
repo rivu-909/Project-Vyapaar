@@ -33,7 +33,12 @@ interface CreateTradeDispatchProps {
         type: TradeType,
         quantity: string,
         tradeId?: string
-    ) => void;
+    ) => Promise<any>;
+}
+
+interface IInput {
+    value: string;
+    isValid: boolean;
 }
 
 function CreateTrade(
@@ -42,17 +47,17 @@ function CreateTrade(
     const { tradeType, productId, trade } = props.route.params;
 
     const [inputs, setInputs] = React.useState<{
-        price: string;
-        quantity: string;
-        firstLine: string;
-        secondLine: string;
-        district: string;
-        state: string;
-        pincode: string;
-    }>(getInputs(null));
+        price: IInput;
+        quantity: IInput;
+        firstLine: IInput;
+        secondLine: IInput;
+        district: IInput;
+        state: IInput;
+        pincode: IInput;
+    }>(getDefaultInputs(null));
 
     React.useEffect(() => {
-        setInputs(getInputs(trade));
+        setInputs(getDefaultInputs(trade));
     }, [trade]);
 
     const inputChangeHandler = (
@@ -62,96 +67,183 @@ function CreateTrade(
         setInputs((currentInputs) => {
             return {
                 ...currentInputs,
-                [inputIdentifier]: enteredValue,
+                [inputIdentifier]: { value: enteredValue, isValid: true },
             };
         });
     };
 
-    const onClose = () => {
+    const onClose = React.useCallback(() => {
         props.navigation.goBack();
-    };
+    }, []);
 
-    const onSubmit = () => {
-        props.onTradeSubmit(
-            productId,
-            props.token,
-            inputs.price,
-            {
-                firstLine: inputs.firstLine,
-                secondLine: inputs.secondLine,
-                district: inputs.district,
-                state: inputs.state,
-                pincode: inputs.pincode,
-            },
-            tradeType,
-            inputs.quantity,
-            trade?._id
-        );
+    const onSubmit = React.useCallback(() => {
+        const priceRegExp = /^\d+(\.\d{1,2})?$/;
+        if (
+            inputs.price.value.length === 0 ||
+            !priceRegExp.test(inputs.price.value)
+        ) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                price: { value: "", isValid: false },
+            }));
+            return;
+        }
 
-        onClose();
-    };
+        if (inputs.quantity.value.length === 0) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                quantity: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        if (inputs.firstLine.value.length === 0) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                firstLine: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        if (inputs.district.value.length === 0) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                district: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        if (inputs.state.value.length === 0) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                state: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        const pincodeRegExp = /^\d{6}$/;
+        if (!pincodeRegExp.test(inputs.pincode.value)) {
+            setInputs((currentInputs) => ({
+                ...currentInputs,
+                pincode: { value: "", isValid: false },
+            }));
+            return;
+        }
+
+        props
+            .onTradeSubmit(
+                productId,
+                props.token,
+                inputs.price.value,
+                {
+                    firstLine: inputs.firstLine.value,
+                    secondLine: inputs.secondLine.value,
+                    district: inputs.district.value,
+                    state: inputs.state.value,
+                    pincode: inputs.pincode.value,
+                },
+                tradeType,
+                inputs.quantity.value,
+                trade?._id
+            )
+            .then(({ payload }) => {
+                if (!payload.validationError) {
+                    setInputs(getDefaultInputs(null));
+                    onClose();
+                } else {
+                    if (payload.validationPath === "address") {
+                        setInputs((currentInputs) => ({
+                            ...currentInputs,
+                            firstLine: { value: "", isValid: false },
+                            district: { value: "", isValid: false },
+                            state: { value: "", isValid: false },
+                            pincode: { value: "", isValid: false },
+                        }));
+                    } else {
+                        setInputs((currentInputs) => ({
+                            ...currentInputs,
+                            [payload.validationPath]: {
+                                value: "",
+                                isValid: false,
+                            },
+                        }));
+                    }
+                }
+            });
+    }, [inputs, trade, props.token, productId, tradeType]);
 
     return (
         <ScrollView
             style={styles.root}
             contentContainerStyle={styles.contentStyle}
         >
-            <Heading label="Create your bid" />
+            <Heading
+                label={`Create your ${
+                    tradeType === TradeType.Bid ? "bid" : "ask"
+                }`}
+            />
             <Input
                 label="Price"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "price"),
-                    value: inputs.price.toString(),
-                    placeholder: "",
+                    value: inputs.price.value.toString(),
+                    placeholder: "250 (price per unit)",
                 }}
+                invalid={!inputs.price.isValid}
             />
             <Input
                 label="Quantity"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "quantity"),
-                    value: inputs.quantity,
+                    value: inputs.quantity.value,
                     placeholder: "100 L",
                 }}
+                invalid={!inputs.quantity.isValid}
             />
             <Input
                 label="Address first line"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "firstLine"),
-                    value: inputs.firstLine,
+                    value: inputs.firstLine.value,
                     placeholder: "Shop 5, Sobha Market...",
                 }}
+                invalid={!inputs.firstLine.isValid}
             />
             <Input
                 label="Address Second Line"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "secondLine"),
-                    value: inputs.secondLine,
+                    value: inputs.secondLine.value,
                     placeholder: "Near Eco Park...",
                 }}
+                invalid={!inputs.secondLine.isValid}
             />
             <Input
                 label="District"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "district"),
-                    value: inputs.district,
+                    value: inputs.district.value,
                     placeholder: "Chandigarh",
                 }}
+                invalid={!inputs.district.isValid}
             />
             <Input
                 label="State"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "state"),
-                    value: inputs.state,
+                    value: inputs.state.value,
                     placeholder: "Punjab",
                 }}
+                invalid={!inputs.state.isValid}
             />
             <Input
                 label="Pincode"
                 textInputConfig={{
                     onChangeText: inputChangeHandler.bind(null, "pincode"),
-                    value: inputs.pincode.toString(),
+                    value: inputs.pincode.value.toString(),
                     placeholder: "160014",
                 }}
+                invalid={!inputs.pincode.isValid}
             />
             <View style={styles.buttonsContainer}>
                 <Button
@@ -212,23 +304,24 @@ const styles = StyleSheet.create({
     },
 });
 
-function getInputs(trade: ITrade | null) {
-    const returnVal = {
-        price: trade?.price ?? "",
-        quantity: trade?.quantity ?? "",
-        firstLine: trade?.address.firstLine ?? "",
-        secondLine: trade?.address.secondLine ?? "",
-        district: trade?.address.district ?? "",
-        state: trade?.address.state ?? "",
-        pincode: trade?.address.pincode.toString() ?? "",
+function getDefaultInputs(trade: ITrade | null) {
+    return {
+        price: { value: trade?.price ?? "", isValid: true },
+        quantity: { value: trade?.quantity ?? "", isValid: true },
+        firstLine: { value: trade?.address.firstLine ?? "", isValid: true },
+        secondLine: { value: trade?.address.secondLine ?? "", isValid: true },
+        district: { value: trade?.address.district ?? "", isValid: true },
+        state: { value: trade?.address.state ?? "", isValid: true },
+        pincode: {
+            value: trade?.address.pincode.toString() ?? "",
+            isValid: true,
+        },
     };
-    return returnVal;
 }
 
 function mapState(state: RootState): CreateTradeStateProps {
-    const user = state.user;
     return {
-        token: user.token ?? "",
+        token: state.user.token ?? "",
     };
 }
 
@@ -242,8 +335,8 @@ function mapDispatch(dispatch: Dispatch): CreateTradeDispatchProps {
             type: TradeType,
             quantity: string,
             tradeId?: string
-        ) => {
-            dispatch(
+        ): Promise<any> => {
+            return dispatch(
                 tradeId
                     ? getProductDetails({
                           actionType: GetProductDetailsActionType.UpdateTrade,
