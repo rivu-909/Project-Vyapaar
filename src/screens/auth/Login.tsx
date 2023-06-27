@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         marginLeft: 20,
         justifyContent: "center",
-        alignItems: "flex-start",
     },
     buttonContainerStyle: {
         marginLeft: 12,

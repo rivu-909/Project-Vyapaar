@@ -48,12 +48,12 @@ function TradeCard(
                 <Heading
                     label={`${address.district} | ${address.state}`}
                     labelStyle={styles.titleLabel}
-                    containerStyle={styles.headingContainer}
+                    containerStyle={styles.addressContainer}
                 />
                 <Heading
                     label={`₹ ${price}`}
                     labelStyle={styles.titleLabel}
-                    containerStyle={styles.headingContainer}
+                    containerStyle={styles.priceContainer}
                 />
             </View>
             <View style={styles.buttonsContainer}>
@@ -63,6 +63,7 @@ function TradeCard(
                         onPress={requestHandler}
                         containerStyle={styles.buttonContainerStyle}
                         labelStyle={styles.buttonLabelStyle}
+                        androidRippleColor="#505050"
                     />
                 )}
                 {props.userId === props.trade.userId && (
@@ -88,9 +89,18 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: "space-between",
     },
-    headingContainer: {
+    addressContainer: {
         marginHorizontal: 0,
         marginVertical: 8,
+        flex: 3,
+        marginRight: 4,
+    },
+    priceContainer: {
+        marginHorizontal: 0,
+        marginVertical: 8,
+        flex: 1,
+        maxWidth: 100,
+        alignItems: "center",
     },
     titleContainer: {
         marginHorizontal: 4,

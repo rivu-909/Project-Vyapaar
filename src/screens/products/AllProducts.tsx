@@ -48,17 +48,17 @@ function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
                             <IconButton
                                 onPress={openCreateProductHandler}
                                 containerStyle={styles.addIconContainer}
+                                androidRippleColor="#787878"
                             >
                                 <MaterialIcons
                                     name="add"
-                                    size={40}
+                                    size={54}
                                     color="white"
                                 />
                             </IconButton>
                         </View>
                     </>
                 )}
-                {/* <Button label="Log out" onPress={props.logout} /> */}
             </View>
         </>
     );
@@ -68,17 +68,17 @@ const styles = StyleSheet.create({
     root: {
         flex: 1,
     },
+    buttonContainer: {
+        alignItems: "center",
+    },
     addIconContainer: {
         margin: 0,
-        backgroundColor: "black",
-        height: 48,
-        width: 48,
-        borderRadius: 12,
-    },
-    buttonContainer: {
-        marginVertical: 8,
-        justifyContent: "center",
-        alignItems: "center",
+        backgroundColor: "#696969",
+        height: 60,
+        width: 60,
+        borderRadius: 30,
+        position: "absolute",
+        bottom: 20,
     },
 });
 

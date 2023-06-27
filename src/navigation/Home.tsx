@@ -1,22 +1,66 @@
 import { StyleSheet } from "react-native";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import AllProducts from "../screens/products/AllProducts";
 import News from "../screens/news/News";
 import Requests from "../screens/requests/Requests";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-const Tab = createMaterialTopTabNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function Home() {
     return (
         <Tab.Navigator
-            screenOptions={{
-                tabBarLabelStyle: styles.tabBarLabelStyle,
-            }}
             sceneContainerStyle={{ backgroundColor: "white" }}
+            screenOptions={{
+                headerShown: false,
+                tabBarLabelStyle: {
+                    fontFamily: "MerriweatherRegular",
+                    fontSize: 14,
+                },
+                tabBarActiveBackgroundColor: "#d3d3d3",
+                tabBarActiveTintColor: "black",
+                tabBarInactiveTintColor: "#707070",
+                tabBarStyle: {
+                    height: 64,
+                },
+                tabBarItemStyle: {
+                    borderRadius: 8,
+                    padding: 4,
+                    margin: 4,
+                },
+            }}
         >
-            <Tab.Screen name="All" component={AllProducts} />
-            <Tab.Screen name="News" component={News} />
-            <Tab.Screen name="Requests" component={Requests} />
+            <Tab.Screen
+                name="All"
+                component={AllProducts}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <FontAwesome5 name="home" size={size} color={color} />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="News"
+                component={News}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <FontAwesome5
+                            name="newspaper"
+                            size={size}
+                            color={color}
+                        />
+                    ),
+                }}
+            />
+            <Tab.Screen
+                name="Requests"
+                component={Requests}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <FontAwesome5 name="users" size={size} color={color} />
+                    ),
+                }}
+            />
         </Tab.Navigator>
     );
 }

@@ -198,11 +198,13 @@ function SignUpForm(
                         label="SignUp"
                         containerStyle={styles.buttonContainerStyle}
                         labelStyle={styles.buttonLabelStyle}
+                        androidRippleColor="#505050"
                     />
                     <Button
                         onPress={props.goToLoginPage}
                         label="Use an existing account"
                         containerStyle={styles.loginButtonContainer}
+                        androidRippleColor="#989898"
                     />
                 </View>
             )}
