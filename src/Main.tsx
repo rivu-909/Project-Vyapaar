@@ -1,30 +1,37 @@
 import { Dispatch } from "@reduxjs/toolkit";
 import React from "react";
-import { View } from "react-native";
 import { connect } from "react-redux";
 import startUp from "./actions/boot/startup";
 import Navigation from "./navigation/Navigation";
-import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import fonts from "./fonts";
+import StartUpLoading from "./components/common/StartUpLoading";
 
 interface MainDispatchProps {
     start: () => void;
 }
 
-SplashScreen.preventAutoHideAsync();
-
 function Main(props: MainDispatchProps) {
     const [loaded] = useFonts(fonts);
+    const [showLoader, setShowLoader] = React.useState(true);
+
     React.useEffect(() => {
         props.start();
+        setTimeout(() => {
+            setShowLoader(false);
+        }, 2000);
     }, []);
 
-    if (!loaded) {
-        return <View style={{ backgroundColor: "black", flex: 1 }} />;
-    }
+    const renderNavigation = React.useCallback(() => {
+        return <Navigation />;
+    }, []);
 
-    return <Navigation />;
+    return (
+        <>
+            {(!loaded || showLoader) && <StartUpLoading />}
+            {loaded && renderNavigation()}
+        </>
+    );
 }
 
 function mapDispatch(dispatch: Dispatch): MainDispatchProps {
