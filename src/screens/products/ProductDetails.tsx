@@ -73,12 +73,12 @@ function ProductDetails(
                     <Heading
                         label={product.description}
                         labelStyle={styles.textStyles}
-                        containerStyle={styles.headingContainer}
+                        containerStyle={styles.descriptionContainer}
                     />
                     <Heading
                         label={`₹ ${product.price}`}
                         labelStyle={styles.textStyles}
-                        containerStyle={styles.headingContainer}
+                        containerStyle={styles.priceContainer}
                     />
                 </View>
                 <TradeList trades={product.trades} productId={productId} />
@@ -88,12 +88,14 @@ function ProductDetails(
                         onPress={BidHandler}
                         containerStyle={styles.buttonContainerStyle}
                         labelStyle={styles.buttonLabelStyle}
+                        androidRippleColor="#505050"
                     />
                     <Button
                         label="Ask"
                         onPress={AskHandler}
                         containerStyle={styles.buttonContainerStyle}
                         labelStyle={styles.buttonLabelStyle}
+                        androidRippleColor="#505050"
                     />
                 </View>
             </View>
@@ -106,10 +108,19 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
     },
-    headingContainer: {
+    descriptionContainer: {
         marginVertical: 0,
         marginTop: 16,
         paddingBottom: 8,
+        flex: 3,
+    },
+    priceContainer: {
+        marginVertical: 0,
+        marginTop: 16,
+        paddingBottom: 8,
+        flex: 1,
+        maxWidth: 100,
+        alignItems: "center",
     },
     productInfo: {
         flexDirection: "row",

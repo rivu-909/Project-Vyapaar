@@ -58,14 +58,16 @@ function ConfirmRequestDailog(
                         onPress={onConfirm}
                         containerStyle={{
                             ...styles.buttonContainerStyle,
-                            ...styles.buttonContainerDark,
+                            backgroundColor: "black",
                         }}
                         labelStyle={styles.buttonText}
+                        androidRippleColor="#505050"
                     />
                     <Button
                         label="Cancel"
                         onPress={props.onCancelRequest}
                         containerStyle={styles.buttonContainerStyle}
+                        androidRippleColor="#d9d9d9"
                     />
                 </View>
             </View>
@@ -95,9 +97,6 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRadius: 8,
         backgroundColor: "#D3D3D3",
-    },
-    buttonContainerDark: {
-        backgroundColor: "black",
     },
     buttonText: {
         color: "white",

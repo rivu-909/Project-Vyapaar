@@ -149,11 +149,13 @@ function CreateProduct(
                         ...styles.buttonContainerDark,
                     }}
                     labelStyle={styles.buttonText}
+                    androidRippleColor="#505050"
                 />
                 <Button
                     onPress={onClose}
                     label="Cancel"
                     containerStyle={styles.buttonContainerStyle}
+                    androidRippleColor="#d9d9d9"
                 />
             </View>
         </ScrollView>

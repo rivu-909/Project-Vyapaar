@@ -17,29 +17,32 @@ export default function ProductCard(props: ProductCardProps) {
         });
     };
     return (
-        <Pressable
-            onPress={goToDetailsHandler}
-            android_ripple={{ color: "grey" }}
-        >
-            <View style={styles.card}>
-                <View>
+        <View style={styles.card}>
+            <Pressable
+                onPress={goToDetailsHandler}
+                android_ripple={{ color: "#d5d5d5" }}
+            >
+                <View style={styles.cardInner}>
+                    <View style={styles.descriptionContainerStyle}>
+                        <Heading
+                            label={props.product.name}
+                            labelStyle={styles.headingLabelStyle}
+                            containerStyle={styles.headingContainerStyle}
+                        />
+                        <Heading
+                            label={props.product.description}
+                            labelStyle={styles.descriptionLabelStyle}
+                            containerStyle={styles.headingContainerStyle}
+                        />
+                    </View>
                     <Heading
-                        label={props.product.name}
-                        labelStyle={styles.headingLabelStyle}
-                        containerStyle={styles.headingContainerStyle}
-                    />
-                    <Heading
-                        label={props.product.description}
-                        labelStyle={styles.descriptionLabelStyle}
-                        containerStyle={styles.headingContainerStyle}
+                        label={`₹ ${props.product.price}`}
+                        labelStyle={styles.priceLabelStyle}
+                        containerStyle={styles.priceContainerStyle}
                     />
                 </View>
-                <Heading
-                    label={`₹ ${props.product.price}`}
-                    labelStyle={styles.priceLabelStyle}
-                />
-            </View>
-        </Pressable>
+            </Pressable>
+        </View>
     );
 }
 
@@ -56,13 +59,24 @@ const styles = StyleSheet.create({
     priceLabelStyle: {
         fontSize: 24,
     },
-    card: {
+    descriptionContainerStyle: {
+        flex: 2.5,
+    },
+    priceContainerStyle: {
+        flex: 1,
+        maxWidth: 100,
+        alignItems: "center",
+    },
+    cardInner: {
         padding: 12,
         flex: 1,
-        margin: 4,
-        backgroundColor: "#F5F5F5",
-        borderRadius: 8,
         flexDirection: "row",
-        justifyContent: "space-between",
+        overflow: "hidden",
+    },
+    card: {
+        backgroundColor: "#F5F5F5",
+        overflow: "hidden",
+        margin: 4,
+        borderRadius: 8,
     },
 });

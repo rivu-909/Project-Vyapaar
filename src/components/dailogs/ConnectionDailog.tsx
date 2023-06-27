@@ -43,6 +43,8 @@ function ConnectiontDailog(
                         label="Okay"
                         onPress={props.onExit}
                         containerStyle={styles.buttonContainerStyle}
+                        labelStyle={styles.buttonText}
+                        androidRippleColor="#505050"
                     />
                 </View>
             </View>
@@ -70,16 +72,12 @@ const styles = StyleSheet.create({
         width: "100%",
         flexDirection: "row",
         justifyContent: "flex-start",
-        alignItems: "center",
         marginRight: 20,
     },
     buttonContainerStyle: {
         marginTop: 8,
         flex: 1,
         borderRadius: 8,
-        backgroundColor: "#D3D3D3",
-    },
-    buttonContainerDark: {
         backgroundColor: "black",
     },
     buttonText: {

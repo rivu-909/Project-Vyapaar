@@ -18,7 +18,7 @@ export default function (props: LoadingOverlayProps) {
     return (
         <View style={[styles.root, props.style]}>
             <Heading label={props.message} />
-            <ActivityIndicator size="large" />
+            <ActivityIndicator size="large" style={styles.activityStyle} />
         </View>
     );
 }
@@ -28,5 +28,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    activityStyle: {
+        marginTop: 20,
     },
 });

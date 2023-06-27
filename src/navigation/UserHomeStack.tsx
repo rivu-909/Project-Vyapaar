@@ -1,4 +1,5 @@
-import { StyleSheet } from "react-native";
+import React from "react";
+import { StyleSheet, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
     DetailsScreenRouteProp,
@@ -9,10 +10,19 @@ import Home from "./Home";
 import CreateProduct from "../screens/products/CreateProduct";
 import CreateTrade from "../screens/products/CreateTrade";
 import NewsDetails from "../screens/news/NewsDetails";
+import { MaterialIcons } from "@expo/vector-icons";
+import IconButton from "../components/common/IconButton";
+import { useDispatch } from "react-redux";
+import logoutHandler from "../actions/auth/logoutHandler";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function UserHomeStack() {
+    const dispatch = useDispatch();
+    const logout = React.useCallback(() => {
+        logoutHandler(dispatch);
+    }, []);
+
     return (
         <Stack.Navigator
             screenOptions={{
@@ -28,7 +38,22 @@ export default function UserHomeStack() {
                 name="Home"
                 component={Home}
                 options={{
-                    headerShown: false,
+                    headerTitle: "",
+                    headerRight: (props) => (
+                        <IconButton
+                            onPress={logout}
+                            containerStyle={styles.logoutButtonContainer}
+                            androidRippleColor="#d5d5d5"
+                        >
+                            <View style={styles.iconContainer}>
+                                <MaterialIcons
+                                    name="logout"
+                                    size={28}
+                                    color="black"
+                                />
+                            </View>
+                        </IconButton>
+                    ),
                 }}
             />
             <Stack.Screen
@@ -73,5 +98,13 @@ const styles = StyleSheet.create({
     },
     contentBackground: {
         backgroundColor: "white",
+    },
+    logoutButtonContainer: {
+        marginHorizontal: 4,
+        borderRadius: 8,
+        elevation: 0,
+    },
+    iconContainer: {
+        padding: 6,
     },
 });

@@ -33,9 +33,7 @@ export default function IconButton(props: ButtonProps) {
 
 const styles = StyleSheet.create({
     buttonOuterContainer: {
-        margin: 4,
-        overflow: "hidden", // to make the ripple effect outside the container to cut off
-        elevation: 2,
+        overflow: "hidden", // to make the ripple effect outside the container to cut of
         alignItems: "center",
         justifyContent: "center",
     },

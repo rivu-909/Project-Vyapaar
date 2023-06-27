@@ -25,6 +25,7 @@ export default function Welcome(props: WelcomeNavigationProps) {
                 <Heading
                     label="Bid Ask 'n' Trade"
                     labelStyle={styles.headingLabel}
+                    containerStyle={{ alignItems: "center" }}
                 />
             </View>
             <Text style={styles.sloganLabel}>
@@ -35,7 +36,7 @@ export default function Welcome(props: WelcomeNavigationProps) {
                 label="Get started..."
                 containerStyle={styles.button}
                 labelStyle={styles.buttonLabel}
-                androidRippleColor={"#A9A9A9"}
+                androidRippleColor="#A9A9A9"
             />
         </View>
     );
@@ -52,6 +53,7 @@ const styles = StyleSheet.create({
         fontFamily: "Lobster",
         color: "white",
         fontSize: 48,
+        textAlign: "center",
     },
     headingContainer: {
         justifyContent: "center",

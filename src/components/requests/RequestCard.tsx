@@ -98,12 +98,14 @@ function RequestCard(
                             onPress={onConfirm}
                             containerStyle={styles.buttonContainerStyle}
                             labelStyle={styles.buttonLabelStyle}
+                            androidRippleColor="#505050"
                         />
                         <Button
                             label="Reject"
                             onPress={onReject}
                             containerStyle={styles.buttonContainerStyle}
                             labelStyle={styles.buttonLabelStyle}
+                            androidRippleColor="#505050"
                         />
                     </View>
                 )}
@@ -114,6 +116,7 @@ function RequestCard(
                         onPress={onConnect}
                         containerStyle={styles.buttonContainerStyle}
                         labelStyle={styles.buttonLabelStyle}
+                        androidRippleColor="#505050"
                     />
                 </View>
             )}

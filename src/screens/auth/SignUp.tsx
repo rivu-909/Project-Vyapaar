@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
     contentStyle: {
         flexGrow: 1,
         marginLeft: 20,
-        alignItems: "flex-start",
         justifyContent: "center",
     },
     buttonContainerStyle: {
