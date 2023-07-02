@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
-import getProductDetails from "../../actions/product/getProductDetails";
+import getProductDetails from "../../actions/product/productHandler";
 import Button from "../../components/common/Button";
 import Heading from "../../components/common/Heading";
 import LoadingOverlay from "../../components/common/LoadingOverlay";

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import getProductDetails from "../../../actions/product/getProductDetails";
+import getProductDetails from "../../../actions/product/productHandler";
 import getProducts from "../../../actions/product/getProducts";
 import IError from "../../../schema/IError";
 import LoadingState from "../../../schema/LoadingState";
@@ -15,7 +15,22 @@ const initialState: ProductState = {
 const productsSlice = createSlice({
     name: "products",
     initialState,
-    reducers: {},
+    reducers: {
+        addProduct: (state: ProductState, action: PayloadAction<Product>) => {
+            state.products.push(action.payload);
+        },
+        updateProduct: (
+            state: ProductState,
+            action: PayloadAction<Product>
+        ) => {
+            const idx = state.products.findIndex(
+                (p) => p.productId === action.payload.productId
+            );
+            if (idx !== -1) {
+                state.products.splice(idx, 1, action.payload);
+            }
+        },
+    },
     extraReducers: (builder) => {
         builder
 
@@ -74,4 +89,5 @@ const productsSlice = createSlice({
     },
 });
 
+export const { addProduct, updateProduct } = productsSlice.actions;
 export default productsSlice.reducer;

@@ -7,6 +7,12 @@ import LoadingState from "../../schema/LoadingState";
 import IUserRequests from "../../schema/user/IUserRequests";
 import getUserTradeRequests from "../../actions/requests/getUserTradeRequests";
 import RequestList from "../../components/requests/RequestList";
+import { subscribe } from "../../store/channel";
+import ITradeRequest from "../../schema/user/ITradeRequest";
+import {
+    addRequest,
+    editRequestResponse,
+} from "../../store/reducer/user/userSlice";
 
 interface RequestStateProps {
     requestsLoadingState: LoadingState;
@@ -16,6 +22,8 @@ interface RequestStateProps {
 
 interface RequestDispatchProps {
     fetchUserTradeRequest: (token: string) => void;
+    addTradeRequest: (request: ITradeRequest) => void;
+    editResponse: (Request: ITradeRequest) => void;
 }
 
 function Request(props: RequestStateProps & RequestDispatchProps) {
@@ -23,6 +31,12 @@ function Request(props: RequestStateProps & RequestDispatchProps) {
         if (props.requestsLoadingState !== LoadingState.success) {
             props.fetchUserTradeRequest(props.token);
         }
+        subscribe(props.token, "send_request", (signal) =>
+            props.addTradeRequest(signal.data)
+        );
+        subscribe(props.token, "request_response", (signal) => {
+            props.editResponse(signal.data);
+        });
     }, []);
 
     return (
@@ -69,6 +83,12 @@ function mapDispatch(dispatch: Dispatch): RequestDispatchProps {
     return {
         fetchUserTradeRequest: (token: string) => {
             dispatch(getUserTradeRequests({ token }));
+        },
+        addTradeRequest: (request: ITradeRequest) => {
+            dispatch(addRequest(request));
+        },
+        editResponse: (request: ITradeRequest) => {
+            dispatch(editRequestResponse(request));
         },
     };
 }

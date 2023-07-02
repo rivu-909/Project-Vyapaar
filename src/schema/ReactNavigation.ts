@@ -1,7 +1,6 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
 import TradeType from "./products/TradeType";
-import { RootState } from "../store/store";
 import ITrade from "./products/ITrade";
 
 export type RootStackParamList = {

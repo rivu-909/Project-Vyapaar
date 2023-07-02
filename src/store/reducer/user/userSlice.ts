@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import UserState from "../../../schema/user/UserState";
-import login from "../../../actions/auth/login";
+import login from "../../../actions/auth/authHandler";
 import signUp from "../../../actions/auth/signUp";
 import LoadingState from "../../../schema/LoadingState";
 import User from "../../../schema/user/User";
@@ -12,12 +12,14 @@ import respondToRequest from "../../../actions/requests/respondToRequest";
 import fetchConnection from "../../../actions/requests/fetchConnection";
 import IConnection from "../../../schema/user/IConnection";
 import IError from "../../../schema/IError";
+import Address from "../../../schema/Address";
 
 const initialState: UserState = {
     token: null,
     name: null,
     userId: null,
     phoneNumber: null,
+    address: null,
     requests: {
         sent: [],
         received: [],
@@ -62,6 +64,37 @@ const userSlice = createSlice({
         logout: (state: UserState) => {
             state.loginState = LoadingState.idle;
             state.token = null;
+        },
+
+        // NEW REQUEST
+
+        addRequest: (
+            state: UserState,
+            action: PayloadAction<ITradeRequest>
+        ) => {
+            if (state.userId === action.payload.receiverId) {
+                state.requests.received.push(action.payload);
+            }
+        },
+
+        // CHANGE REQUEST STATUS
+
+        editRequestResponse: (
+            state: UserState,
+            action: PayloadAction<ITradeRequest>
+        ) => {
+            const idx = state.requests.sent.findIndex(
+                (r) => r._id === action.payload._id
+            );
+            if (idx !== -1) {
+                state.requests.sent.splice(idx, 1, action.payload);
+            }
+        },
+
+        // ADDRESS
+
+        setUserAddress: (state: UserState, action: PayloadAction<Address>) => {
+            state.address = action.payload;
         },
     },
 
@@ -124,11 +157,11 @@ const userSlice = createSlice({
             .addCase(
                 respondToRequest.fulfilled.type,
                 (state: UserState, action: PayloadAction<ITradeRequest>) => {
-                    const idx = state.requests?.received.findIndex(
+                    const idx = state.requests.sent.findIndex(
                         (r) => r._id === action.payload._id
                     );
                     if (idx !== -1) {
-                        state.requests?.received.splice(idx, 1, action.payload);
+                        state.requests.sent.splice(idx, 1, action.payload);
                     }
                 }
             )
@@ -162,5 +195,13 @@ function addUser(state: UserState, action: PayloadAction<User>) {
     state.userId = action.payload.userId;
 }
 
-export const { logout, setToken, setUser, setBootState } = userSlice.actions;
+export const {
+    logout,
+    setToken,
+    setUser,
+    setBootState,
+    addRequest,
+    editRequestResponse,
+    setUserAddress,
+} = userSlice.actions;
 export default userSlice.reducer;

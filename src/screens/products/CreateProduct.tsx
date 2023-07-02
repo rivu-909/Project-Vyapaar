@@ -5,9 +5,10 @@ import Heading from "../../components/common/Heading";
 import Input from "../../components/common/Input";
 import { Dispatch, RootState } from "../../store/store";
 import { connect } from "react-redux";
-import getProductDetails from "../../actions/product/getProductDetails";
+import getProductDetails from "../../actions/product/productHandler";
 import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
 import { CreateProductScreenNavigationProp } from "../../schema/ReactNavigation";
+import { publish } from "../../store/channel";
 
 interface CreateProductProps {
     navigation: CreateProductScreenNavigationProp;
@@ -95,7 +96,8 @@ function CreateProduct(
                 inputs.price.value
             )
             .then(({ payload }) => {
-                if (!payload.validationError) {
+                if (!payload?.validationError) {
+                    // publish(props.token, "create_product", payload);
                     setInputs(getDefaultInputs());
                     onClose();
                 } else {

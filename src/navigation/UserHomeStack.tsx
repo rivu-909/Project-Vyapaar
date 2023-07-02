@@ -14,6 +14,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import IconButton from "../components/common/IconButton";
 import { useDispatch } from "react-redux";
 import logoutHandler from "../actions/auth/logoutHandler";
+import Heading from "../components/common/Heading";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -60,9 +61,13 @@ export default function UserHomeStack() {
                 name="Details"
                 component={ProductDetails}
                 options={({ route }: { route: DetailsScreenRouteProp }) => ({
-                    title: route.params.name,
-                    headerTitleStyle: styles.detailsTitle,
-                    headerTitleAlign: "center",
+                    headerTitle: () => (
+                        <Heading
+                            label={route.params.name}
+                            labelStyle={styles.titleStyle}
+                            containerStyle={styles.titleContainer}
+                        />
+                    ),
                     contentStyle: { ...styles.contentBackground, marginTop: 0 },
                 })}
             />
@@ -92,9 +97,14 @@ export default function UserHomeStack() {
 }
 
 const styles = StyleSheet.create({
-    detailsTitle: {
+    titleStyle: {
         fontFamily: "MerriweatherRegular",
-        fontSize: 28,
+        fontSize: 24,
+    },
+    titleContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+        maxWidth: 300,
     },
     contentBackground: {
         backgroundColor: "white",

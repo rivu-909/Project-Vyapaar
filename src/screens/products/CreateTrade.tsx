@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
 import { connect } from "react-redux";
-import getProductDetails from "../../actions/product/getProductDetails";
+import getProductDetails from "../../actions/product/productHandler";
 import Button from "../../components/common/Button";
 import Heading from "../../components/common/Heading";
 import Input from "../../components/common/Input";
@@ -13,6 +13,7 @@ import {
     CreateTradeScreenNavigationProp,
     CreateTradeScreenRouteProp,
 } from "../../schema/ReactNavigation";
+import { setUserAddress } from "../../store/reducer/user/userSlice";
 import { Dispatch, RootState } from "../../store/store";
 
 interface CreateTradeProps {
@@ -22,6 +23,7 @@ interface CreateTradeProps {
 
 interface CreateTradeStateProps {
     token: string;
+    address: Address | null;
 }
 
 interface CreateTradeDispatchProps {
@@ -34,6 +36,7 @@ interface CreateTradeDispatchProps {
         quantity: string,
         tradeId?: string
     ) => Promise<any>;
+    updateAddress: (address: Address) => void;
 }
 
 interface IInput {
@@ -54,10 +57,10 @@ function CreateTrade(
         district: IInput;
         state: IInput;
         pincode: IInput;
-    }>(getDefaultInputs(null));
+    }>(getDefaultInputs(null, props.address));
 
     React.useEffect(() => {
-        setInputs(getDefaultInputs(trade));
+        setInputs(getDefaultInputs(trade, props.address));
     }, [trade]);
 
     const inputChangeHandler = (
@@ -130,25 +133,27 @@ function CreateTrade(
             return;
         }
 
+        const address = {
+            firstLine: inputs.firstLine.value,
+            secondLine: inputs.secondLine.value,
+            district: inputs.district.value,
+            state: inputs.state.value,
+            pincode: inputs.pincode.value,
+        };
+
         props
             .onTradeSubmit(
                 productId,
                 props.token,
                 inputs.price.value,
-                {
-                    firstLine: inputs.firstLine.value,
-                    secondLine: inputs.secondLine.value,
-                    district: inputs.district.value,
-                    state: inputs.state.value,
-                    pincode: inputs.pincode.value,
-                },
+                address,
                 tradeType,
                 inputs.quantity.value,
                 trade?._id
             )
             .then(({ payload }) => {
                 if (!payload.validationError) {
-                    setInputs(getDefaultInputs(null));
+                    setInputs(getDefaultInputs(null, address));
                     onClose();
                 } else {
                     if (payload.validationPath === "address") {
@@ -170,6 +175,7 @@ function CreateTrade(
                     }
                 }
             });
+        props.updateAddress(address);
     }, [inputs, trade, props.token, productId, tradeType]);
 
     return (
@@ -306,16 +312,28 @@ const styles = StyleSheet.create({
     },
 });
 
-function getDefaultInputs(trade: ITrade | null) {
+function getDefaultInputs(trade: ITrade | null, address: Address | null) {
     return {
         price: { value: trade?.price ?? "", isValid: true },
         quantity: { value: trade?.quantity ?? "", isValid: true },
-        firstLine: { value: trade?.address.firstLine ?? "", isValid: true },
-        secondLine: { value: trade?.address.secondLine ?? "", isValid: true },
-        district: { value: trade?.address.district ?? "", isValid: true },
-        state: { value: trade?.address.state ?? "", isValid: true },
+        firstLine: {
+            value: trade?.address.firstLine ?? address?.firstLine ?? "",
+            isValid: true,
+        },
+        secondLine: {
+            value: trade?.address.secondLine ?? address?.secondLine ?? "",
+            isValid: true,
+        },
+        district: {
+            value: trade?.address.district ?? address?.district ?? "",
+            isValid: true,
+        },
+        state: {
+            value: trade?.address.state ?? address?.state ?? "",
+            isValid: true,
+        },
         pincode: {
-            value: trade?.address.pincode.toString() ?? "",
+            value: trade?.address.pincode.toString() ?? address?.pincode ?? "",
             isValid: true,
         },
     };
@@ -324,6 +342,7 @@ function getDefaultInputs(trade: ITrade | null) {
 function mapState(state: RootState): CreateTradeStateProps {
     return {
         token: state.user.token ?? "",
+        address: state.user.address,
     };
 }
 
@@ -360,6 +379,9 @@ function mapDispatch(dispatch: Dispatch): CreateTradeDispatchProps {
                           quantity,
                       })
             );
+        },
+        updateAddress: (address: Address) => {
+            dispatch(setUserAddress(address));
         },
     };
 }

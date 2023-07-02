@@ -12,6 +12,12 @@ import IconButton from "../../components/common/IconButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { CreateProductScreenNavigationProp } from "../../schema/ReactNavigation";
 import { useNavigation } from "@react-navigation/native";
+import {
+    addProduct,
+    updateProduct,
+} from "../../store/reducer/products/productsSlice";
+import { subscribe } from "../../store/channel";
+// import { useChannel } from "@ably-labs/react-hooks";
 
 interface AllProductsStateProps {
     productLoadingState: LoadingState;
@@ -22,6 +28,8 @@ interface AllProductsStateProps {
 interface AllProductsDispatchProps {
     fetchProducts: (token: string) => void;
     logout: () => void;
+    addNewProduct: (product: Product) => void;
+    updateProduct: (product: Product) => void;
 }
 
 function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
@@ -29,9 +37,31 @@ function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
         if (props.productLoadingState !== LoadingState.success) {
             props.fetchProducts(props.token);
         }
+        subscribe(props.token, "create_product", (msg) =>
+            props.addNewProduct(msg.data)
+        );
+        subscribe(props.token, "create_trade", (msg) => {
+            props.updateProduct(msg.data);
+        });
+        subscribe(props.token, "update_trade", (msg) => {
+            props.updateProduct(msg.data);
+        });
+        // async function setChannel() {
+        //     channel = await getChannel(props.token);
+        //     console.log("channel is set");
+        //     channel.subscribe("create_product", (signal) => {
+        //         props.addNewProduct(signal.data);
+        //     });
+        // }
+        // setChannel();
     }, []);
 
     const navigation = useNavigation<CreateProductScreenNavigationProp>();
+    // const channel = useChannel("test", "create_product", (signal) => {
+    //     props.addNewProduct(signal.data);
+    //     // console.log(signal);
+    // });
+
     const openCreateProductHandler = () => {
         navigation.navigate("CreateProduct");
     };
@@ -98,6 +128,12 @@ function mapDispatch(dispatch: Dispatch): AllProductsDispatchProps {
         },
         logout: () => {
             logoutHandler(dispatch);
+        },
+        addNewProduct: (product: Product) => {
+            dispatch(addProduct(product));
+        },
+        updateProduct: (product: Product) => {
+            dispatch(updateProduct(product));
         },
     };
 }
