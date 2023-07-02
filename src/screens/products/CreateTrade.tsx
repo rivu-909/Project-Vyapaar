@@ -6,7 +6,7 @@ import Button from "../../components/common/Button";
 import Heading from "../../components/common/Heading";
 import Input from "../../components/common/Input";
 import Address from "../../schema/Address";
-import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
+import ProductActionType from "../../schema/ProductActionType";
 import ITrade from "../../schema/products/ITrade";
 import TradeType from "../../schema/products/TradeType";
 import {
@@ -360,7 +360,7 @@ function mapDispatch(dispatch: Dispatch): CreateTradeDispatchProps {
             return dispatch(
                 tradeId
                     ? getProductDetails({
-                          actionType: GetProductDetailsActionType.UpdateTrade,
+                          actionType: ProductActionType.UpdateTrade,
                           productId,
                           tradeId,
                           token,
@@ -370,7 +370,7 @@ function mapDispatch(dispatch: Dispatch): CreateTradeDispatchProps {
                           quantity,
                       })
                     : getProductDetails({
-                          actionType: GetProductDetailsActionType.CreateTrade,
+                          actionType: ProductActionType.CreateTrade,
                           productId,
                           token,
                           price,

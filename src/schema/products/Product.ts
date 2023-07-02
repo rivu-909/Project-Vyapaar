@@ -7,4 +7,5 @@ export default interface Product {
     price: string;
     description: string;
     trades: Array<ITrade>;
+    updatedAt: Date;
 }

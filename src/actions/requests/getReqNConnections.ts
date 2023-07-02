@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import IToken from "../../schema/servicesSchema/IToken";
-import fetchUserTradeRequestsServiceCall from "../../services/requests/fetchUserTradeRequestsServiceCall";
+import fetchUserTradeRequestsServiceCall from "../../services/requests/fetchReqNConnectionsServiceCall";
 
-const getUserTradeRequests = createAsyncThunk(
+const getReqNConnections = createAsyncThunk(
     "tradeRequest",
     async (params: IToken, { rejectWithValue }) => {
         try {
@@ -14,4 +14,4 @@ const getUserTradeRequests = createAsyncThunk(
     }
 );
 
-export default getUserTradeRequests;
+export default getReqNConnections;

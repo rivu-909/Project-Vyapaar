@@ -14,6 +14,8 @@ export default async function signUpServiceCall(
             name: data.user.name,
             phoneNumber: data.user.phoneNumber,
             token: data.token,
+            requests: data.userTradeRequests,
+            connections: data.connections,
         };
         return userData;
     } catch (err) {

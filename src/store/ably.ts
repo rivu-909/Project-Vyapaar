@@ -1,19 +1,24 @@
 import Ably from "ably";
 import { serverUrl } from "../constants";
 
-export type Channel = Ably.Types.RealtimeChannelCallbacks;
+export type Channel = Ably.Types.RealtimeChannelCallbacks | undefined;
 
+let ably: Ably.Realtime;
 let channel: Channel;
 
 async function configureAbly(token: string): Promise<Channel> {
-    const ably = new Ably.Realtime({
-        authUrl: `${serverUrl}/ably/auth`,
-        authHeaders: { Authorization: token },
-        autoConnect: false,
-    });
-    await ably.connection.once("connected");
-    console.log("connected to ably");
-    return ably.channels.get("test");
+    if (!ably) {
+        ably = new Ably.Realtime({
+            authUrl: `${serverUrl}/ably/auth`,
+            authHeaders: { Authorization: token },
+        });
+    }
+    try {
+        await ably.connection.once("connected");
+        return ably.channels.get("test");
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 export async function getChannel(token: string): Promise<Channel> {
@@ -29,11 +34,10 @@ export async function subscribe(
     callback: (msg: Ably.Types.Message) => void
 ) {
     channel = await getChannel(token);
-    console.log("channel is set");
-    channel.subscribe(event, callback);
+    channel?.subscribe(event, callback);
 }
 
 export async function publish(token: string, event: string, data: any) {
     channel = await getChannel(token);
-    channel.publish(event, data);
+    channel?.publish(event, data);
 }

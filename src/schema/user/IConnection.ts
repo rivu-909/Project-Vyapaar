@@ -1,5 +1,5 @@
 export default interface IConnection {
-    tradeRequestId: string;
+    userId: string;
     name: string;
     phoneNumber: string;
 }

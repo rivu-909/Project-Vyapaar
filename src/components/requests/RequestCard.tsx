@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { connect } from "react-redux";
 import fetchConnection from "../../actions/requests/fetchConnection";
 import respondToRequest from "../../actions/requests/respondToRequest";
@@ -10,6 +10,7 @@ import ITradeRequest from "../../schema/user/ITradeRequest";
 import RequestStatus from "../../schema/user/RequestStatus";
 import { onShowConnectionDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
+import getFormattedDate from "../../utils/getFormattedDate";
 import Button from "../common/Button";
 import Heading from "../common/Heading";
 
@@ -62,12 +63,16 @@ function RequestCard(
 
     const onConnect = React.useCallback(() => {
         let index = props.connections.findIndex(
-            (r) => r.tradeRequestId === props.request._id
+            (c) =>
+                (props.received && c.userId === props.request.senderId) ||
+                (!props.received && c.userId === props.request.receiverId)
         );
-        if (index === -1) {
-            if (props.connectionFetchingStatus !== LoadingState.pending) {
-                props.getConnection(props.token, props.request._id);
-            }
+
+        if (
+            index === -1 &&
+            props.connectionFetchingStatus !== LoadingState.Pending
+        ) {
+            props.getConnection(props.token, props.request._id);
             index = props.connections.length;
             return;
         }
@@ -81,13 +86,27 @@ function RequestCard(
     return (
         <View style={styles.card}>
             <Heading
-                label={product.name}
+                label={
+                    props.received
+                        ? props.request.senderName
+                        : props.request.receiverName
+                }
                 labelStyle={styles.headingLabelStyle}
+                containerStyle={styles.headingContainerStyle}
+            />
+            <Heading
+                label={product.name}
+                labelStyle={styles.descriptionLabelStyle}
                 containerStyle={styles.headingContainerStyle}
             />
             <Heading
                 label={props.request.status}
                 labelStyle={styles.descriptionLabelStyle}
+                containerStyle={styles.headingContainerStyle}
+            />
+            <Heading
+                label={getFormattedDate(props.request.updatedAt)}
+                labelStyle={{ fontSize: 12 }}
                 containerStyle={styles.headingContainerStyle}
             />
             {props.received &&

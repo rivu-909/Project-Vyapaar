@@ -6,7 +6,7 @@ import NewsState from "../../../schema/news/NewsState";
 
 const initialState: NewsState = {
     articles: [],
-    newsLoadingState: LoadingState.idle,
+    newsLoadingState: LoadingState.Idle,
 };
 
 const newsSlice = createSlice({
@@ -18,18 +18,20 @@ const newsSlice = createSlice({
             // GET NEWS
 
             .addCase(getNews.pending.type, (state: NewsState) => {
-                state.newsLoadingState = LoadingState.pending;
+                state.newsLoadingState = LoadingState.Pending;
             })
             .addCase(
                 getNews.fulfilled.type,
                 (state: NewsState, action: PayloadAction<Array<IArticle>>) => {
-                    state.newsLoadingState = LoadingState.success;
+                    state.newsLoadingState = LoadingState.Success;
                     state.articles = action.payload;
                 }
             )
             .addCase(getNews.rejected.type, (state: NewsState) => {
-                state.newsLoadingState = LoadingState.failed;
-            });
+                state.newsLoadingState = LoadingState.Failed;
+            })
+
+            .addDefaultCase((state: NewsState) => {});
     },
 });
 

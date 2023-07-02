@@ -20,13 +20,13 @@ interface NewsDispatchProps {
 
 function News(props: NewsStateProps & NewsDispatchProps) {
     React.useEffect(() => {
-        if (props.newsLoadingState !== LoadingState.success)
+        if (props.newsLoadingState !== LoadingState.Success)
             props.fetchNews(props.token);
     }, []);
 
     return (
         <View style={styles.root}>
-            {props.newsLoadingState === LoadingState.pending ? (
+            {props.newsLoadingState === LoadingState.Pending ? (
                 <LoadingOverlay message="Loading news..." />
             ) : (
                 <ArticlesList articles={props.articles} />

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import IRespondToRequest from "../../schema/servicesSchema/IRespondToRequest";
 import respondToRequestServiceCall from "../../services/requests/respondToRequestServiceCall";
-import { publish } from "../../store/channel";
+import { publish } from "../../store/ably";
 
 const respondToRequest = createAsyncThunk(
     "respondToRequest",

@@ -3,12 +3,13 @@ import { connect } from "react-redux";
 import { View, StyleSheet } from "react-native";
 import Button from "../common/Button";
 import { Dispatch, RootState } from "../../store/store";
-import login from "../../actions/auth/authHandler";
+import authHandler from "../../actions/auth/authHandler";
 import Heading from "../common/Heading";
 import Input from "../common/Input";
 import validatePasswordCriteria from "../../utils/validatePasswordCriteria";
 import LoadingState from "../../schema/LoadingState";
 import LoadingOverlay from "../common/LoadingOverlay";
+import AuthActionType from "../../schema/AuthActionType";
 
 interface LogInFormProps {
     goToSignUpPage: () => void;
@@ -81,7 +82,7 @@ function LogInForm(
 
     return (
         <>
-            {props.loginState === LoadingState.pending ? (
+            {props.loginState === LoadingState.Pending ? (
                 <LoadingOverlay message="Logging you in..." />
             ) : (
                 <View style={styles.root}>
@@ -153,14 +154,20 @@ function mapState(state: RootState): LogInFormStateProps {
     const user = state.user;
     return {
         phoneNumber: user.phoneNumber ?? "",
-        loginState: user.loginState,
+        loginState: user.authState,
     };
 }
 
 function mapDispatch(dispatch: Dispatch): LogInFormDispatchProps {
     return {
         loginHandler: (phoneNumber: string, password: string): Promise<any> => {
-            return dispatch(login({ phoneNumber, password }));
+            return dispatch(
+                authHandler({
+                    phoneNumber,
+                    password,
+                    actionType: AuthActionType.Login,
+                })
+            );
         },
     };
 }

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import ISendTradeRequest from "../../schema/servicesSchema/ISendTradeRequest";
 import sendTradeRequestServiceCall from "../../services/requests/sendTradeRequestServiceCall";
-import { publish } from "../../store/channel";
+import { publish } from "../../store/ably";
 
 const sendTradeRequests = createAsyncThunk(
     "sendRequest",

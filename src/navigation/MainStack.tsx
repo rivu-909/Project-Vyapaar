@@ -18,7 +18,7 @@ import Heading from "../components/common/Heading";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function UserHomeStack() {
+export default function MainStack() {
     const dispatch = useDispatch();
     const logout = React.useCallback(() => {
         logoutHandler(dispatch);
@@ -33,6 +33,7 @@ export default function UserHomeStack() {
                 animation: "slide_from_right",
                 statusBarStyle: "light",
                 statusBarColor: "black",
+                headerShadowVisible: false,
             }}
         >
             <Stack.Screen

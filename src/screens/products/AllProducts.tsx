@@ -16,8 +16,7 @@ import {
     addProduct,
     updateProduct,
 } from "../../store/reducer/products/productsSlice";
-import { subscribe } from "../../store/channel";
-// import { useChannel } from "@ably-labs/react-hooks";
+import { subscribe } from "../../store/ably";
 
 interface AllProductsStateProps {
     productLoadingState: LoadingState;
@@ -34,7 +33,7 @@ interface AllProductsDispatchProps {
 
 function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
     React.useEffect(() => {
-        if (props.productLoadingState !== LoadingState.success) {
+        if (props.productLoadingState !== LoadingState.Success) {
             props.fetchProducts(props.token);
         }
         subscribe(props.token, "create_product", (msg) =>
@@ -46,21 +45,9 @@ function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
         subscribe(props.token, "update_trade", (msg) => {
             props.updateProduct(msg.data);
         });
-        // async function setChannel() {
-        //     channel = await getChannel(props.token);
-        //     console.log("channel is set");
-        //     channel.subscribe("create_product", (signal) => {
-        //         props.addNewProduct(signal.data);
-        //     });
-        // }
-        // setChannel();
     }, []);
 
     const navigation = useNavigation<CreateProductScreenNavigationProp>();
-    // const channel = useChannel("test", "create_product", (signal) => {
-    //     props.addNewProduct(signal.data);
-    //     // console.log(signal);
-    // });
 
     const openCreateProductHandler = () => {
         navigation.navigate("CreateProduct");
@@ -69,7 +56,7 @@ function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
     return (
         <>
             <View style={styles.root}>
-                {props.productLoadingState === LoadingState.pending ? (
+                {props.productLoadingState === LoadingState.Pending ? (
                     <LoadingOverlay message="Loading..." />
                 ) : (
                     <>

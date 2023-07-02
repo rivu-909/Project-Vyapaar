@@ -3,30 +3,25 @@ import { connect } from "react-redux";
 import LoadingState from "../schema/LoadingState";
 import { RootState } from "../store/store";
 import AuthStack from "./AuthStack";
-import UserHomeStack from "./UserHomeStack";
+import MainStack from "./MainStack";
 
 interface NavigationStateProps {
-    // isNewUser: boolean;
     isAuthenticated: boolean;
-    bootState: LoadingState;
 }
 
 function Navigation(props: NavigationStateProps) {
     return (
         <>
             <NavigationContainer>
-                {props.isAuthenticated ? <UserHomeStack /> : <AuthStack />}
+                {props.isAuthenticated ? <MainStack /> : <AuthStack />}
             </NavigationContainer>
         </>
     );
 }
 
 function mapState(state: RootState): NavigationStateProps {
-    const user = state.user;
     return {
-        // isNewUser: !!state.user.userId,
-        isAuthenticated: !!user.token,
-        bootState: user.bootState,
+        isAuthenticated: !!state.user.token,
     };
 }
 

@@ -1,8 +1,8 @@
 enum LoadingState {
-    idle = "idle",
-    pending = "pending",
-    success = "success",
-    failed = "failed",
+    Idle = "IDLE",
+    Pending = "PENDING",
+    Success = "SUCCESS",
+    Failed = "FAILED",
 }
 
 export default LoadingState;

@@ -6,9 +6,9 @@ import Input from "../../components/common/Input";
 import { Dispatch, RootState } from "../../store/store";
 import { connect } from "react-redux";
 import getProductDetails from "../../actions/product/productHandler";
-import GetProductDetailsActionType from "../../schema/GetProductDetailsActionType";
+import GetProductDetailsActionType from "../../schema/ProductActionType";
 import { CreateProductScreenNavigationProp } from "../../schema/ReactNavigation";
-import { publish } from "../../store/channel";
+import { publish } from "../../store/ably";
 
 interface CreateProductProps {
     navigation: CreateProductScreenNavigationProp;
@@ -97,7 +97,6 @@ function CreateProduct(
             )
             .then(({ payload }) => {
                 if (!payload?.validationError) {
-                    // publish(props.token, "create_product", payload);
                     setInputs(getDefaultInputs());
                     onClose();
                 } else {

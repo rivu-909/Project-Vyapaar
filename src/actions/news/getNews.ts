@@ -6,8 +6,8 @@ const getNews = createAsyncThunk(
     "news",
     async (params: IToken, { rejectWithValue }) => {
         try {
-            const userData = await fetchNewsServiceCall(params);
-            return userData;
+            const news = await fetchNewsServiceCall(params);
+            return news;
         } catch (err) {
             return rejectWithValue((err as Error).message);
         }
