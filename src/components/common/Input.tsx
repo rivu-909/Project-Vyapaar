@@ -6,6 +6,7 @@ import {
     TextInputProps,
     View,
 } from "react-native";
+import color from "../../colorPalette";
 
 interface InputProps {
     label: string;
@@ -21,7 +22,9 @@ export default function Input(props: InputProps) {
             </Text>
             <TextInput
                 style={[styles.input, !!props.invalid && styles.errorInput]}
-                placeholderTextColor={!!props.invalid ? "#ec9a9a" : "grey"}
+                placeholderTextColor={
+                    !!props.invalid ? color.red400 : color.dark100
+                }
                 {...props.textInputConfig}
             />
         </View>
@@ -40,16 +43,16 @@ const styles = StyleSheet.create({
     },
     input: {
         paddingBottom: 8,
-        borderBottomColor: "black",
+        borderBottomColor: color.dark800,
         borderBottomWidth: 1,
         minWidth: 250,
         fontFamily: "MerriweatherLight",
     },
     errorLabel: {
-        color: "red",
+        color: color.red400,
     },
     errorInput: {
-        color: "red",
-        borderBottomColor: "red",
+        color: color.red400,
+        borderBottomColor: color.red400,
     },
 });

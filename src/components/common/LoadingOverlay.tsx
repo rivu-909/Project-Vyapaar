@@ -6,7 +6,7 @@ import {
     ViewStyle,
     TextStyle,
 } from "react-native";
-import Heading from "./Heading";
+import Label from "./Label";
 
 interface LoadingOverlayProps {
     message: string;
@@ -17,8 +17,8 @@ interface LoadingOverlayProps {
 export default function (props: LoadingOverlayProps) {
     return (
         <View style={[styles.root, props.style]}>
-            <Heading label={props.message} />
-            <ActivityIndicator size="large" style={styles.activityStyle} />
+            <Label label={props.message} labelStyle={styles.labelStyle} />
+            <ActivityIndicator size={64} style={styles.activityStyle} />
         </View>
     );
 }
@@ -28,6 +28,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+    },
+    labelStyle: {
+        fontSize: 28,
+        fontWeight: "500",
     },
     activityStyle: {
         marginTop: 20,

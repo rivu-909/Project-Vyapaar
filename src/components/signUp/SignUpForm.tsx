@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import Button from "../common/Button";
 import { Dispatch, RootState } from "../../store/store";
-import Heading from "../common/Heading";
+import Label from "../common/Label";
 import Input from "../common/Input";
 import validatePasswordCriteria from "../../utils/validatePasswordCriteria";
 import validateGstinCriteria from "../../utils/validateGstinCriteria";
@@ -11,6 +11,7 @@ import LoadingState from "../../schema/LoadingState";
 import LoadingOverlay from "../common/LoadingOverlay";
 import authHandler from "../../actions/auth/authHandler";
 import AuthActionType from "../../schema/AuthActionType";
+import color from "../../colorPalette";
 
 interface SignUpFormProps {
     goToLoginPage: () => void;
@@ -124,7 +125,11 @@ function SignUpForm(
                 <LoadingOverlay message="Creating your account..." />
             ) : (
                 <View style={styles.root}>
-                    <Heading label="Sign Up" />
+                    <Label
+                        label="Sign Up"
+                        labelStyle={{ fontSize: 28 }}
+                        containerStyle={{ marginBottom: 16 }}
+                    />
                     <Input
                         label="Name"
                         textInputConfig={{
@@ -159,7 +164,7 @@ function SignUpForm(
                         }}
                         invalid={!inputs.password.isValid}
                     />
-                    <Heading
+                    <Label
                         label="It should have atleast 6 digits, 1 capital letter, 1 small letter, 1 number, 1 special character"
                         labelStyle={styles.promptLabelStyle}
                         containerStyle={styles.promptContainerStyle}
@@ -190,7 +195,7 @@ function SignUpForm(
                         }}
                         invalid={!inputs.gstin.isValid}
                     />
-                    <Heading
+                    <Label
                         label="Please provide the authentic GSTIN as per terms and conditions"
                         labelStyle={styles.promptLabelStyle}
                         containerStyle={styles.promptContainerStyle}
@@ -201,13 +206,13 @@ function SignUpForm(
                         label="SignUp"
                         containerStyle={styles.buttonContainerStyle}
                         labelStyle={styles.buttonLabelStyle}
-                        androidRippleColor="#505050"
+                        androidRippleColor={color.theme1000}
                     />
                     <Button
                         onPress={props.goToLoginPage}
                         label="Use an existing account"
                         containerStyle={styles.loginButtonContainer}
-                        androidRippleColor="#989898"
+                        androidRippleColor={color.dark100}
                     />
                 </View>
             )}
@@ -223,18 +228,18 @@ const styles = StyleSheet.create({
     },
     buttonContainerStyle: {
         borderRadius: 8,
-        backgroundColor: "black",
+        backgroundColor: color.theme400,
     },
     buttonLabelStyle: {
         color: "white",
     },
     promptLabelStyle: {
-        color: "#c5c5c5",
+        color: color.dark100,
         fontSize: 12,
     },
     loginButtonContainer: {
         borderRadius: 8,
-        backgroundColor: "#D3D3D3",
+        backgroundColor: color.dark50,
     },
     promptContainerStyle: {
         marginVertical: 8,

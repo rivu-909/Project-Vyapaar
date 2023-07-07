@@ -2,12 +2,13 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 import sendTradeRequests from "../../actions/requests/sendTradeRequest";
+import color from "../../colorPalette";
 import ITradeRequest from "../../schema/user/ITradeRequest";
 import { onCloseRequestConfirmDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
 import Button from "../common/Button";
 import DailogBox from "../common/DailogBox";
-import Heading from "../common/Heading";
+import Label from "../common/Label";
 
 interface ConfirmRequestDailogStateProps {
     visible: boolean;
@@ -48,9 +49,10 @@ function ConfirmRequestDailog(
     return (
         <DailogBox onClose={props.onCancelRequest} visible={props.visible}>
             <View style={styles.centeredView}>
-                <Heading
-                    label="Request the user?"
+                <Label
+                    label="Send trade request?"
                     labelStyle={styles.headingLabel}
+                    containerStyle={styles.headingContainer}
                 />
                 <View style={styles.buttonsContainer}>
                     <Button
@@ -58,16 +60,16 @@ function ConfirmRequestDailog(
                         onPress={onConfirm}
                         containerStyle={{
                             ...styles.buttonContainerStyle,
-                            backgroundColor: "black",
+                            backgroundColor: color.theme400,
                         }}
                         labelStyle={styles.buttonText}
-                        androidRippleColor="#505050"
+                        androidRippleColor={color.theme1000}
                     />
                     <Button
                         label="Cancel"
                         onPress={props.onCancelRequest}
                         containerStyle={styles.buttonContainerStyle}
-                        androidRippleColor="#d9d9d9"
+                        androidRippleColor={color.dark100}
                     />
                 </View>
             </View>
@@ -77,26 +79,29 @@ function ConfirmRequestDailog(
 
 const styles = StyleSheet.create({
     centeredView: {
+        width: "95%",
         justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "white",
+        backgroundColor: color.theme100,
         borderRadius: 20,
-        padding: 35,
+        padding: 16,
+        paddingLeft: 24,
     },
     headingLabel: {
-        fontSize: 28,
+        fontSize: 24,
+    },
+    headingContainer: {
+        marginVertical: 16,
     },
     buttonsContainer: {
         width: "100%",
         flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "center",
-        marginRight: 20,
     },
     buttonContainerStyle: {
         flex: 1,
         borderRadius: 8,
-        backgroundColor: "#D3D3D3",
+        backgroundColor: color.dark50,
     },
     buttonText: {
         color: "white",

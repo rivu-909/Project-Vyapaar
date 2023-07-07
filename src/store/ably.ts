@@ -1,31 +1,49 @@
 import Ably from "ably";
 import { serverUrl } from "../constants";
-
-export type Channel = Ably.Types.RealtimeChannelCallbacks | undefined;
+import LoadingState from "../schema/LoadingState";
 
 let ably: Ably.Realtime;
-let channel: Channel;
+let channel: Ably.Types.RealtimeChannelCallbacks;
 
-async function configureAbly(token: string): Promise<Channel> {
-    if (!ably) {
-        ably = new Ably.Realtime({
-            authUrl: `${serverUrl}/ably/auth`,
-            authHeaders: { Authorization: token },
+let connectionState: LoadingState = LoadingState.Idle;
+
+let publishCallStack: {
+    event: string;
+    data: any;
+}[] = [];
+let subscribeCallStack: {
+    event: string;
+    callback: (msg: Ably.Types.Message) => void;
+}[] = [];
+
+let retryCount = 1;
+const maxRetryCount = 3;
+
+function configureAbly(token: string) {
+    ably = new Ably.Realtime({
+        authUrl: `${serverUrl}/ably/auth`,
+        authHeaders: { Authorization: token },
+        autoConnect: false,
+    });
+    connectionState = LoadingState.Pending;
+    ably.connect();
+    ably.connection.on("connected", () => {
+        connectionState = LoadingState.Success;
+        channel = ably.channels.get("test");
+        subscribeCallStack.forEach((call) => {
+            channel.subscribe(call.event, call.callback);
         });
-    }
-    try {
-        await ably.connection.once("connected");
-        return ably.channels.get("test");
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-export async function getChannel(token: string): Promise<Channel> {
-    if (!channel) {
-        channel = await configureAbly(token);
-    }
-    return channel;
+        publishCallStack.forEach((call) => {
+            channel.publish(call.event, call.data);
+        });
+    });
+    ably.connection.on("disconnected", () => {
+        connectionState = LoadingState.Failed;
+        retryCount++;
+        if (retryCount > maxRetryCount) {
+            ably.close();
+        }
+    });
 }
 
 export async function subscribe(
@@ -33,11 +51,23 @@ export async function subscribe(
     event: string,
     callback: (msg: Ably.Types.Message) => void
 ) {
-    channel = await getChannel(token);
-    channel?.subscribe(event, callback);
+    if (connectionState === LoadingState.Idle) {
+        subscribeCallStack.push({ event, callback });
+        configureAbly(token);
+    } else if (connectionState === LoadingState.Pending) {
+        subscribeCallStack.push({ event, callback });
+    } else if (connectionState === LoadingState.Success) {
+        channel?.subscribe(event, callback);
+    }
 }
 
 export async function publish(token: string, event: string, data: any) {
-    channel = await getChannel(token);
-    channel?.publish(event, data);
+    if (connectionState === LoadingState.Idle) {
+        publishCallStack.push({ event, data });
+        configureAbly(token);
+    } else if (connectionState === LoadingState.Pending) {
+        publishCallStack.push({ event, data });
+    } else if (connectionState === LoadingState.Success) {
+        channel?.publish(event, data);
+    }
 }

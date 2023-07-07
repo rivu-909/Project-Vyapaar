@@ -15,7 +15,10 @@ export default async function fetchConnectionServiceCall(
                 },
             }
         );
-        return { ...response.data.user, tradeRequestId: params.tradeRequestId };
+        return {
+            ...response.data.connection,
+            tradeRequestId: params.tradeRequestId,
+        };
     } catch (err) {
         throw err;
     }

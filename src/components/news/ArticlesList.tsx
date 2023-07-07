@@ -6,12 +6,16 @@ interface ArticlesListProps {
     articles: Array<IArticle>;
 }
 
+function generateRandom() {
+    return Math.random().toString() + new Date().toString();
+}
+
 export default function ArticlesList(props: ArticlesListProps) {
     return (
         <ScrollView>
             <View style={styles.root}>
                 {props.articles.map((article) => (
-                    <Article article={article} key={article.publishedAt} />
+                    <Article article={article} key={generateRandom()} />
                 ))}
             </View>
         </ScrollView>
@@ -21,6 +25,5 @@ export default function ArticlesList(props: ArticlesListProps) {
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        padding: 8,
     },
 });

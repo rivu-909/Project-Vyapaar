@@ -1,7 +1,7 @@
 import { StyleSheet, View, ScrollView } from "react-native";
 import ITrade from "../../schema/products/ITrade";
 import TradeType from "../../schema/products/TradeType";
-import Heading from "../common/Heading";
+import Label from "../common/Label";
 import TradeCard from "./TradeCard";
 
 interface TradeListProps {
@@ -26,7 +26,7 @@ export default function TradeList(props: TradeListProps) {
 
     const renderHeading = (label: string) => {
         return (
-            <Heading
+            <Label
                 label={label}
                 labelStyle={styles.headingStyle}
                 containerStyle={styles.headingContainer}
@@ -52,13 +52,13 @@ export default function TradeList(props: TradeListProps) {
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        padding: 8,
     },
     headingContainer: {
         alignItems: "center",
-        marginBottom: 8,
+        margin: 0,
+        marginVertical: 8,
     },
     headingStyle: {
-        fontSize: 20,
+        fontSize: 16,
     },
 });

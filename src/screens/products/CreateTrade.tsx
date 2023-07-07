@@ -3,7 +3,7 @@ import { StyleSheet, View, ScrollView } from "react-native";
 import { connect } from "react-redux";
 import getProductDetails from "../../actions/product/productHandler";
 import Button from "../../components/common/Button";
-import Heading from "../../components/common/Heading";
+import Label from "../../components/common/Label";
 import Input from "../../components/common/Input";
 import Address from "../../schema/Address";
 import ProductActionType from "../../schema/ProductActionType";
@@ -15,6 +15,7 @@ import {
 } from "../../schema/ReactNavigation";
 import { setUserAddress } from "../../store/reducer/user/userSlice";
 import { Dispatch, RootState } from "../../store/store";
+import color from "../../colorPalette";
 
 interface CreateTradeProps {
     navigation: CreateTradeScreenNavigationProp;
@@ -183,10 +184,10 @@ function CreateTrade(
             style={styles.root}
             contentContainerStyle={styles.contentStyle}
         >
-            <Heading
-                label={`Create your ${
-                    tradeType === TradeType.Bid ? "bid" : "ask"
-                }`}
+            <Label
+                label={`${tradeType === TradeType.Bid ? "Bid" : "Ask"}`}
+                containerStyle={{ marginTop: 16 }}
+                labelStyle={{ fontSize: 28 }}
             />
             <Input
                 label="Price"
@@ -260,13 +261,13 @@ function CreateTrade(
                         ...styles.buttonContainerDark,
                     }}
                     labelStyle={styles.buttonText}
-                    androidRippleColor="#505050"
+                    androidRippleColor={color.theme1000}
                 />
                 <Button
                     onPress={onClose}
                     label="Cancel"
                     containerStyle={styles.buttonContainerStyle}
-                    androidRippleColor="#d9d9d9"
+                    androidRippleColor={color.dark100}
                 />
             </View>
         </ScrollView>
@@ -280,17 +281,8 @@ const styles = StyleSheet.create({
     contentStyle: {
         flexGrow: 1,
         marginHorizontal: 20,
-
         alignItems: "flex-start",
         justifyContent: "center",
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
     },
     buttonsContainer: {
         width: "100%",
@@ -302,10 +294,10 @@ const styles = StyleSheet.create({
     buttonContainerStyle: {
         flex: 1,
         borderRadius: 8,
-        backgroundColor: "#D3D3D3",
+        backgroundColor: color.dark50,
     },
     buttonContainerDark: {
-        backgroundColor: "black",
+        backgroundColor: color.theme400,
     },
     buttonText: {
         color: "white",

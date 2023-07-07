@@ -6,8 +6,9 @@ import {
     View,
     Image,
 } from "react-native";
+import color from "../../colorPalette";
 import Button from "../../components/common/Button";
-import Heading from "../../components/common/Heading";
+import Label from "../../components/common/Label";
 import { WelcomeScreenNavigationProp } from "../../schema/ReactNavigation";
 
 interface WelcomeNavigationProps {
@@ -22,8 +23,8 @@ export default function Welcome(props: WelcomeNavigationProps) {
     return (
         <View style={styles.root}>
             <View style={styles.headingContainer}>
-                <Heading
-                    label="Bid Ask 'n' Trade"
+                <Label
+                    label="Big Vyapaar"
                     labelStyle={styles.headingLabel}
                     containerStyle={{ alignItems: "center" }}
                 />
@@ -36,7 +37,7 @@ export default function Welcome(props: WelcomeNavigationProps) {
                 label="Get started..."
                 containerStyle={styles.button}
                 labelStyle={styles.buttonLabel}
-                androidRippleColor="#A9A9A9"
+                androidRippleColor={color.theme1000}
             />
         </View>
     );
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
         resizeMode: "stretch",
     },
     sloganLabel: {
-        fontFamily: "MerriweatherLightItalic",
+        fontFamily: "Lora",
         color: "white",
         fontSize: 20,
         textAlign: "center",
@@ -74,12 +75,11 @@ const styles = StyleSheet.create({
         marginHorizontal: 40,
     },
     button: {
-        backgroundColor: "#606060",
+        backgroundColor: color.theme400,
         borderRadius: 8,
-        margin: 40,
     },
     buttonLabel: {
-        fontSize: 20,
+        paddingHorizontal: 20,
         color: "white",
     },
 });

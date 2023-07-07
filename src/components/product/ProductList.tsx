@@ -7,10 +7,6 @@ interface ProductListProps {
     products: Array<Product>;
 }
 
-function renderProductCard({ item }: { item: Product }) {
-    return <ProductCard product={item} />;
-}
-
 export default function ProductList(props: ProductListProps) {
     return (
         <ScrollView>
@@ -26,6 +22,6 @@ export default function ProductList(props: ProductListProps) {
 const styles = StyleSheet.create({
     productList: {
         flex: 1,
-        padding: 8,
+        paddingHorizontal: 12,
     },
 });

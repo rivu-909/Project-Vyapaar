@@ -13,6 +13,7 @@ interface ButtonProps {
     onPress: (evt: GestureResponderEvent) => void;
     label: string;
     containerStyle?: StyleProp<ViewStyle>;
+    innerContainerStyle?: StyleProp<ViewStyle>;
     labelStyle?: StyleProp<TextStyle>;
     androidRippleColor?: string;
 }
@@ -24,7 +25,12 @@ export default function Button(props: ButtonProps) {
                 onPress={props.onPress}
                 android_ripple={{ color: props.androidRippleColor }}
             >
-                <View style={styles.buttonInnerContainer}>
+                <View
+                    style={[
+                        styles.buttonInnerContainer,
+                        props.innerContainerStyle,
+                    ]}
+                >
                     <Text style={[styles.buttonText, props.labelStyle]}>
                         {props.label}
                     </Text>
@@ -46,6 +52,6 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         textAlign: "center",
-        fontFamily: "MerriweatherRegular",
+        fontFamily: "Lora",
     },
 });

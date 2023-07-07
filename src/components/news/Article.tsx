@@ -1,9 +1,10 @@
 import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import Heading from "../common/Heading";
+import { Image, Pressable, StyleSheet, View } from "react-native";
+import Label from "../common/Label";
 import { useNavigation } from "@react-navigation/native";
 import { NewsDetailsScreenNavigationProp } from "../../schema/ReactNavigation";
 import IArticle from "../../schema/news/IArticle";
+import color from "../../colorPalette";
 
 const error404ImageUrl =
     "https://howfix.net/wp-content/uploads/2018/02/sIaRmaFSMfrw8QJIBAa8mA-article.png";
@@ -33,10 +34,11 @@ export default function Article(props: ArticleProps) {
             android_ripple={{ color: "grey" }}
         >
             <View style={styles.root}>
-                <Heading
+                <Label
                     label={article.title ?? ""}
                     labelStyle={styles.titleLabel}
                     containerStyle={styles.headingContainer}
+                    numberOfLines={3}
                 />
                 {shouldShowImage && article.urlToImage ? (
                     <Image
@@ -45,13 +47,14 @@ export default function Article(props: ArticleProps) {
                         onError={onError}
                     />
                 ) : null}
-                <Text style={styles.subtitle}>{`${
-                    article.author ? "- " + article.author : null
-                } ${
-                    article.publishedAt
-                        ? " |  " + publishedDate.toDateString()
-                        : null
-                }`}</Text>
+                <Label
+                    labelStyle={styles.subtitle}
+                    label={`${article.author ? article.author : null} ${
+                        article.publishedAt
+                            ? " |  " + publishedDate.toDateString()
+                            : null
+                    }`}
+                />
             </View>
         </Pressable>
     );
@@ -60,11 +63,10 @@ export default function Article(props: ArticleProps) {
 const styles = StyleSheet.create({
     root: {
         padding: 8,
-        paddingHorizontal: 16,
-        // flex: 1,
-        margin: 4,
-        backgroundColor: "#F5F5F5",
-        borderRadius: 8,
+        marginBottom: 8,
+        marginHorizontal: 12,
+        backgroundColor: color.theme100,
+        borderRadius: 12,
         justifyContent: "space-between",
     },
     headingContainer: {
@@ -83,6 +85,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
     },
     subtitle: {
-        fontFamily: "MerriweatherRegular",
+        fontFamily: "Lora",
     },
 });

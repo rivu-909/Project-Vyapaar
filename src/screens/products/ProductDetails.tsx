@@ -1,8 +1,9 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
+import color from "../../colorPalette";
 import Button from "../../components/common/Button";
-import Heading from "../../components/common/Heading";
+import Label from "../../components/common/Label";
 import ConfirmRequestDailog from "../../components/dailogs/ConfirmRequestDailog";
 import TradeList from "../../components/product/TradeList";
 import Product from "../../schema/products/Product";
@@ -12,6 +13,7 @@ import {
     DetailsScreenRouteProp,
 } from "../../schema/ReactNavigation";
 import { RootState } from "../../store/store";
+import getFormattedDate from "../../utils/getFormattedDate";
 import getProductFromId from "../../utils/getProductFromId";
 
 interface ProductDetailsProps {
@@ -46,14 +48,23 @@ function ProductDetails(props: ProductDetailsProps & ProductDetailsStateProps) {
 
     return (
         <>
-            <View style={styles.screen}>
+            <View style={styles.root}>
                 <View style={styles.productInfo}>
-                    <Heading
-                        label={product.description}
-                        labelStyle={styles.textStyles}
-                        containerStyle={styles.descriptionContainer}
-                    />
-                    <Heading
+                    <View style={styles.descriptionContainer}>
+                        <Label
+                            label={product.description}
+                            labelStyle={styles.textStyles}
+                            containerStyle={styles.firstColumnContent}
+                        />
+                        <Label
+                            label={`Last Updated: ${getFormattedDate(
+                                product.updatedAt
+                            )}`}
+                            labelStyle={styles.timeStamp}
+                            containerStyle={styles.firstColumnContent}
+                        />
+                    </View>
+                    <Label
                         label={`₹ ${product.price}`}
                         labelStyle={styles.textStyles}
                         containerStyle={styles.priceContainer}
@@ -66,14 +77,14 @@ function ProductDetails(props: ProductDetailsProps & ProductDetailsStateProps) {
                         onPress={BidHandler}
                         containerStyle={styles.buttonContainerStyle}
                         labelStyle={styles.buttonLabelStyle}
-                        androidRippleColor="#505050"
+                        androidRippleColor={color.theme1000}
                     />
                     <Button
                         label="Ask"
                         onPress={AskHandler}
                         containerStyle={styles.buttonContainerStyle}
                         labelStyle={styles.buttonLabelStyle}
-                        androidRippleColor="#505050"
+                        androidRippleColor={color.theme1000}
                     />
                 </View>
             </View>
@@ -83,32 +94,38 @@ function ProductDetails(props: ProductDetailsProps & ProductDetailsStateProps) {
 }
 
 const styles = StyleSheet.create({
-    screen: {
+    root: {
         flex: 1,
-    },
-    descriptionContainer: {
-        marginVertical: 0,
-        marginTop: 16,
-        paddingBottom: 8,
-        flex: 3,
-    },
-    priceContainer: {
-        marginVertical: 0,
-        marginTop: 16,
-        paddingBottom: 8,
-        flex: 1,
-        maxWidth: 100,
-        alignItems: "center",
     },
     productInfo: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        marginHorizontal: 28,
+        marginHorizontal: 16,
         borderBottomWidth: 1,
+        borderBottomColor: color.dark100,
+        paddingBottom: 4,
         marginBottom: 4,
     },
+    descriptionContainer: {
+        marginVertical: 0,
+        flex: 3,
+    },
+    firstColumnContent: {
+        marginVertical: 0,
+        marginBottom: 4,
+    },
+    priceContainer: {
+        marginVertical: 0,
+        flex: 1,
+        maxWidth: 100,
+        alignItems: "flex-end",
+    },
     textStyles: {
-        fontSize: 20,
+        fontSize: 16,
+        color: color.dark800,
+    },
+    timeStamp: {
+        fontSize: 12,
+        color: color.dark100,
     },
     buttonsContainer: {
         flexDirection: "row",
@@ -117,7 +134,7 @@ const styles = StyleSheet.create({
     buttonContainerStyle: {
         flex: 1,
         borderRadius: 8,
-        backgroundColor: "black",
+        backgroundColor: color.theme400,
     },
     buttonLabelStyle: {
         color: "white",

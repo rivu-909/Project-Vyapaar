@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import IUserRequests from "../../schema/user/IUserRequests";
-import Heading from "../common/Heading";
+import Label from "../common/Label";
 import ConnectionDailog from "../dailogs/ConnectionDailog";
 import RequestCard from "./RequestCard";
 
@@ -12,10 +12,16 @@ interface RequestListProps {
 export default function RequestList(props: RequestListProps) {
     const renderHeading = (label: string) => {
         return (
-            <Heading
+            <Label
                 label={label}
                 labelStyle={styles.headingStyle}
-                containerStyle={styles.headingContainer}
+                containerStyle={[
+                    styles.headingContainer,
+                    label === "SENT" &&
+                        props.requests.received.length !== 0 && {
+                            marginTop: 8,
+                        },
+                ]}
             />
         );
     };
@@ -46,13 +52,13 @@ export default function RequestList(props: RequestListProps) {
 const styles = StyleSheet.create({
     root: {
         flex: 1,
-        padding: 8,
     },
     headingContainer: {
         alignItems: "center",
+        margin: 0,
         marginBottom: 8,
     },
     headingStyle: {
-        fontSize: 20,
+        fontSize: 16,
     },
 });

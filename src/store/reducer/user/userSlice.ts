@@ -8,7 +8,7 @@ import IConnection from "../../../schema/user/IConnection";
 import IError from "../../../schema/IError";
 import Address from "../../../schema/Address";
 import authHandler from "../../../actions/auth/authHandler";
-import getUserTradeRequests from "../../../actions/requests/getReqNConnections";
+import getReqNConnections from "../../../actions/requests/getReqNConnections";
 import ReqNConnections from "../../../schema/user/ReqNConnections";
 
 const initialState: UserState = {
@@ -122,11 +122,11 @@ const userSlice = createSlice({
 
             // FETCH USER TRADE REQUESTS
 
-            .addCase(getUserTradeRequests.pending.type, (state: UserState) => {
+            .addCase(getReqNConnections.pending.type, (state: UserState) => {
                 state.reqNConnectionsState = LoadingState.Pending;
             })
             .addCase(
-                getUserTradeRequests.fulfilled.type,
+                getReqNConnections.fulfilled.type,
                 (state: UserState, action: PayloadAction<ReqNConnections>) => {
                     state.connections = action.payload.connections;
                     state.requests = action.payload.requests;
@@ -134,7 +134,7 @@ const userSlice = createSlice({
                 }
             )
             .addCase(
-                getUserTradeRequests.rejected.type,
+                getReqNConnections.rejected.type,
                 (state: UserState, action: PayloadAction<IError>) => {
                     state.reqNConnectionsState = LoadingState.Failed;
                 }

@@ -17,6 +17,7 @@ import {
     updateProduct,
 } from "../../store/reducer/products/productsSlice";
 import { subscribe } from "../../store/ably";
+import color from "../../colorPalette";
 
 interface AllProductsStateProps {
     productLoadingState: LoadingState;
@@ -65,7 +66,7 @@ function AllProducts(props: AllProductsStateProps & AllProductsDispatchProps) {
                             <IconButton
                                 onPress={openCreateProductHandler}
                                 containerStyle={styles.addIconContainer}
-                                androidRippleColor="#787878"
+                                androidRippleColor={color.theme1000}
                             >
                                 <MaterialIcons
                                     name="add"
@@ -90,12 +91,13 @@ const styles = StyleSheet.create({
     },
     addIconContainer: {
         margin: 0,
-        backgroundColor: "#696969",
+        backgroundColor: color.theme400,
+        opacity: 0.8,
         height: 60,
         width: 60,
         borderRadius: 30,
         position: "absolute",
-        bottom: 20,
+        bottom: 24,
     },
 });
 

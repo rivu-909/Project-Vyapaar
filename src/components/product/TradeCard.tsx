@@ -5,11 +5,13 @@ import { MaterialIcons } from "@expo/vector-icons";
 import ITrade from "../../schema/products/ITrade";
 import { onShowRequestConfirmDailog } from "../../store/reducer/appConfig/appConfigSlice";
 import { Dispatch, RootState } from "../../store/store";
-import Button from "../common/Button";
-import Heading from "../common/Heading";
+import Label from "../common/Label";
 import IconButton from "../common/IconButton";
 import { useNavigation } from "@react-navigation/native";
 import { CreateTradeScreenNavigationProp } from "../../schema/ReactNavigation";
+import color from "../../colorPalette";
+import getFormattedDate from "../../utils/getFormattedDate";
+import getFormattedTime from "../../utils/getFormattedTime";
 
 interface TradeCardProps {
     trade: ITrade;
@@ -27,7 +29,7 @@ interface TradeCardDispatchProps {
 function TradeCard(
     props: TradeCardProps & TradeCardStateProps & TradeCardDispatchProps
 ) {
-    const { price, address, type } = props.trade;
+    const { price, address, type, quantity, createdAt } = props.trade;
 
     const requestHandler = React.useCallback(() => {
         props.onRequest(props.trade.userId, props.productId, props.trade._id);
@@ -37,43 +39,82 @@ function TradeCard(
     const editTradeHandler = React.useCallback(() => {
         navigation.navigate("CreateTrade", {
             productId: props.productId,
-            tradeType: props.trade.type,
+            tradeType: type,
             trade: props.trade,
         });
-    }, [props.productId, props.trade]);
+    }, [props.productId, props.trade, type]);
 
     return (
         <View style={styles.root}>
             <View style={styles.titleContainer}>
-                <Heading
-                    label={`${address.district} | ${address.state}`}
-                    labelStyle={styles.titleLabel}
-                    containerStyle={styles.addressContainer}
-                />
-                <Heading
-                    label={`₹ ${price}`}
-                    labelStyle={styles.titleLabel}
-                    containerStyle={styles.priceContainer}
-                />
-            </View>
-            <View style={styles.buttonsContainer}>
-                {props.userId !== props.trade.userId && (
-                    <Button
-                        label="Request"
-                        onPress={requestHandler}
-                        containerStyle={styles.buttonContainerStyle}
-                        labelStyle={styles.buttonLabelStyle}
-                        androidRippleColor="#505050"
+                <View style={styles.firstColumn}>
+                    <Label
+                        label={`${address.firstLine}`}
+                        labelStyle={styles.defaultFont}
+                        containerStyle={styles.addressContainer}
                     />
-                )}
-                {props.userId === props.trade.userId && (
-                    <IconButton
-                        onPress={editTradeHandler}
-                        containerStyle={styles.iconButtonStyle}
-                    >
-                        <MaterialIcons name="edit" size={20} color="white" />
-                    </IconButton>
-                )}
+                    {address.secondLine?.length !== 0 && (
+                        <Label
+                            label={`${address.secondLine}`}
+                            labelStyle={styles.defaultFont}
+                            containerStyle={styles.addressContainer}
+                        />
+                    )}
+                    <Label
+                        label={`${address.district} | ${address.state}`}
+                        labelStyle={styles.defaultFont}
+                        containerStyle={styles.addressContainer}
+                    />
+                    <Label
+                        label={`${address.pincode}`}
+                        labelStyle={styles.defaultFont}
+                        containerStyle={styles.addressContainer}
+                    />
+                    <Label
+                        label={`Created: ${getFormattedDate(
+                            createdAt
+                        )} | ${getFormattedTime(createdAt)}`}
+                        labelStyle={styles.timeStampFont}
+                        containerStyle={styles.timestamp}
+                    />
+                </View>
+                <View style={styles.secondColumn}>
+                    <Label
+                        label={`₹ ${price}`}
+                        labelStyle={styles.defaultFont}
+                        containerStyle={styles.secondColumnContent}
+                    />
+                    <Label
+                        label={`Qty. ${quantity}`}
+                        labelStyle={styles.defaultFont}
+                        containerStyle={styles.secondColumnContent}
+                    />
+                    <View style={styles.buttonsContainer}>
+                        {props.userId === props.trade.userId ? (
+                            <IconButton
+                                onPress={editTradeHandler}
+                                containerStyle={styles.iconButtonStyle}
+                            >
+                                <MaterialIcons
+                                    name="edit"
+                                    size={20}
+                                    color={color.dark800}
+                                />
+                            </IconButton>
+                        ) : (
+                            <IconButton
+                                onPress={requestHandler}
+                                containerStyle={styles.iconButtonStyle}
+                            >
+                                <MaterialIcons
+                                    name="send"
+                                    size={20}
+                                    color={color.dark800}
+                                />
+                            </IconButton>
+                        )}
+                    </View>
+                </View>
             </View>
         </View>
     );
@@ -81,53 +122,53 @@ function TradeCard(
 
 const styles = StyleSheet.create({
     root: {
-        padding: 8,
-        paddingHorizontal: 16,
+        padding: 12,
         flex: 1,
-        margin: 4,
-        backgroundColor: "#F5F5F5",
-        borderRadius: 8,
+        marginHorizontal: 12,
+        marginBottom: 8,
+        backgroundColor: color.theme100,
+        borderRadius: 16,
         justifyContent: "space-between",
     },
-    addressContainer: {
-        marginHorizontal: 0,
-        marginVertical: 8,
-        flex: 3,
-        marginRight: 4,
+    defaultFont: {
+        fontSize: 16,
+        color: color.dark800,
     },
-    priceContainer: {
-        marginHorizontal: 0,
+    firstColumn: { flex: 2.5 },
+    addressContainer: {
+        margin: 0,
+    },
+    timestamp: {
+        margin: 0,
         marginVertical: 8,
-        flex: 1,
-        maxWidth: 100,
-        alignItems: "center",
+    },
+    timeStampFont: {
+        fontSize: 12,
+        color: color.dark100,
+    },
+    secondColumn: { flex: 1 },
+    secondColumnContent: {
+        maxWidth: 150,
+        alignItems: "flex-end",
     },
     titleContainer: {
         marginHorizontal: 4,
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    titleLabel: {
-        fontSize: 20,
-    },
     buttonsContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
-    },
-    buttonContainerStyle: {
-        margin: 0,
-        borderRadius: 8,
-        backgroundColor: "#808080",
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: "flex-end",
     },
     iconButtonStyle: {
         margin: 0,
         paddingHorizontal: 10,
         paddingVertical: 12,
         borderRadius: 8,
-        backgroundColor: "#808080",
-    },
-    buttonLabelStyle: {
-        color: "white",
+        borderWidth: 1,
+        borderColor: color.dark800,
     },
 });
 
